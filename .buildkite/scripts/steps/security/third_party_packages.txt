@@ -18,3 +18,5 @@ xml-formatter
 @tanstack/react-virtual
 @storybook/addon-docs
 @babel/plugin-transform-class-static-block
+dompurify
+magic-bytes.js
