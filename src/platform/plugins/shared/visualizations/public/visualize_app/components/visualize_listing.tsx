@@ -45,10 +45,32 @@ import { getTypes } from '../../services';
 import type { VisualizeServices } from '../types';
 import { getNoItemsMessage, getCustomColumn, getCustomSortingOptions } from '../utils';
 import { getVisualizeListItemLinkFn } from '../utils/get_visualize_list_item_link';
-import {
-  toTableListViewSavedObject,
-  type VisualizeUserContent,
-} from '../../utils/to_table_list_view_saved_object';
+import type { VisualizeUserContent } from '../../visualization_listing/find_visualizations';
+import type { VisualizationStage } from '../../vis_types/vis_type_alias_registry';
+
+const toTableListViewSavedObject = (savedObject: Record<string, unknown>): VisualizeUserContent => {
+  return {
+    id: savedObject.id as string,
+    updatedAt: savedObject.updatedAt as string,
+    managed: savedObject.managed as boolean,
+    references: savedObject.references as Array<{ id: string; type: string; name: string }>,
+    type: savedObject.savedObjectType as string,
+    icon: savedObject.icon as string,
+    stage: savedObject.stage as VisualizationStage,
+    savedObjectType: savedObject.savedObjectType as string,
+    typeTitle: savedObject.typeTitle as string,
+    title: (savedObject.title as string) ?? '',
+    error: (savedObject.error as string) ?? '',
+    editor: savedObject.editor as any,
+    attributes: {
+      id: savedObject.id as string,
+      title: (savedObject.title as string) ?? '',
+      description: savedObject.description as string,
+      readOnly: savedObject.readOnly as boolean,
+      error: savedObject.error as string,
+    },
+  };
+};
 
 const visualizeListingStyles = {
   table: ({ euiTheme }: UseEuiTheme) => css`

@@ -11,7 +11,6 @@ import { renderHook, act } from '@testing-library/react';
 
 import { getDashboardBackupService } from '../../services/dashboard_backup_service';
 import { coreServices } from '../../services/kibana_services';
-import { confirmCreateWithUnsaved } from '../confirm_overlays';
 import type { DashboardSavedObjectUserContent } from '../types';
 import { useDashboardListingTable } from './use_dashboard_listing_table';
 
@@ -88,22 +87,6 @@ describe('useDashboardListingTable', () => {
     expect(result.current.unsavedDashboardIds).toEqual([]);
   });
 
-  test('should not render the create dashboard button when showCreateDashboardButton is false', () => {
-    const initialFilter = 'myFilter';
-    const { result } = renderHook(() =>
-      useDashboardListingTable({
-        getDashboardUrl,
-        goToDashboard,
-        initialFilter,
-        urlStateEnabled: false,
-        showCreateDashboardButton: false,
-      })
-    );
-
-    const tableListViewTableProps = result.current.tableListViewTableProps;
-    expect(tableListViewTableProps.createItem).toBeUndefined();
-  });
-
   test('should return the correct tableListViewTableProps', () => {
     const initialFilter = 'myFilter';
     const { result } = renderHook(() =>
@@ -118,10 +101,8 @@ describe('useDashboardListingTable', () => {
     const tableListViewTableProps = result.current.tableListViewTableProps;
 
     const expectedProps = {
-      createItem: expect.any(Function),
       deleteItems: expect.any(Function),
       editItem: expect.any(Function),
-      noItemsMessage: expect.any(Object),
       entityName: 'Dashboard',
       entityNamePlural: 'Dashboards',
       findItems: expect.any(Function),
@@ -179,40 +160,7 @@ describe('useDashboardListingTable', () => {
     expect(goToDashboard).toHaveBeenCalled();
   });
 
-  test('should call goToDashboard when createItem is called without unsaved changes', () => {
-    const { result } = renderHook(() =>
-      useDashboardListingTable({
-        getDashboardUrl,
-        goToDashboard,
-      })
-    );
-
-    act(() => {
-      result.current.tableListViewTableProps.createItem?.();
-    });
-
-    expect(goToDashboard).toHaveBeenCalled();
-  });
-
-  test('should call confirmCreateWithUnsaved and clear state when createItem is called with unsaved changes', () => {
-    const { result } = renderHook(() =>
-      useDashboardListingTable({
-        getDashboardUrl,
-        goToDashboard,
-        useSessionStorageIntegration: true,
-      })
-    );
-
-    act(() => {
-      result.current.tableListViewTableProps.createItem?.();
-    });
-
-    expect(confirmCreateWithUnsaved).toHaveBeenCalled();
-    expect(clearStateMock).toHaveBeenCalled();
-    expect(goToDashboard).toHaveBeenCalled();
-  });
-
-  test('createItem should be undefined when showWriteControls equals false', () => {
+  test('createItem should not be provided by hook - tabs provide their own', () => {
     coreServices.application.capabilities = {
       ...coreServices.application.capabilities,
       dashboard_v2: {

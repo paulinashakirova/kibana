@@ -11,7 +11,7 @@ import React from 'react';
 import { EuiBetaBadge, EuiButton, EuiEmptyPrompt, EuiIcon, EuiToolTip } from '@elastic/eui';
 import { i18n } from '@kbn/i18n';
 import { FormattedMessage } from '@kbn/i18n-react';
-import type { VisualizationListItem } from '@kbn/visualizations-plugin/public';
+import type { VisualizationListItem } from '../vis_types/vis_type_alias_registry';
 
 const getBadge = (item: VisualizationListItem) => {
   if (item.stage === 'beta') {
@@ -19,10 +19,10 @@ const getBadge = (item: VisualizationListItem) => {
       <EuiBetaBadge
         className="visListingTable__betaIcon"
         label="B"
-        title={i18n.translate('dashboard.weightedVisualizationsTab.listing.betaTitle', {
+        title={i18n.translate('visualizations.listing.betaTitle', {
           defaultMessage: 'Beta',
         })}
-        tooltipContent={i18n.translate('dashboard.weightedVisualizationsTab.listing.betaTooltip', {
+        tooltipContent={i18n.translate('visualizations.listing.betaTooltip', {
           defaultMessage:
             'This visualization is in beta and is subject to change. The design and code is less mature than official GA ' +
             'features and is being provided as-is with no warranties. Beta features are not subject to the support SLA of official GA ' +
@@ -35,16 +35,13 @@ const getBadge = (item: VisualizationListItem) => {
       <EuiBetaBadge
         className="visListingTable__experimentalIcon"
         label="E"
-        title={i18n.translate('dashboard.weightedVisualizationsTab.listing.experimentalTitle', {
+        title={i18n.translate('visualizations.listing.experimentalTitle', {
           defaultMessage: 'Technical preview',
         })}
-        tooltipContent={i18n.translate(
-          'dashboard.weightedVisualizationsTab.listing.experimentalTooltip',
-          {
-            defaultMessage:
-              'This functionality is in technical preview and may be changed or removed completely in a future release. Elastic will work to fix any issues, but features in technical preview are not subject to the support SLA of official GA features.',
-          }
-        )}
+        tooltipContent={i18n.translate('visualizations.listing.experimentalTooltip', {
+          defaultMessage:
+            'This functionality is in technical preview and may be changed or removed completely in a future release. Elastic will work to fix any issues, but features in technical preview are not subject to the support SLA of official GA features.',
+        })}
       />
     );
   }
@@ -70,7 +67,7 @@ const renderItemTypeIcon = (item: VisualizationListItem) => {
 export const getVisualizationListingColumn = () => {
   return {
     field: 'typeTitle',
-    name: i18n.translate('dashboard.weightedVisualizationsTab.listing.table.typeColumnName', {
+    name: i18n.translate('visualizations.listing.table.typeColumnName', {
       defaultMessage: 'Type',
     }),
     sortable: true,
@@ -97,10 +94,7 @@ export const getVisualizationListingColumn = () => {
                 type="warning"
                 size="m"
               />
-              <FormattedMessage
-                id="dashboard.weightedVisualizationsTab.listing.type.unknown"
-                defaultMessage="Unknown"
-              />
+              <FormattedMessage id="visualizations.listing.type.unknown" defaultMessage="Unknown" />
             </span>
           </EuiToolTip>
         );
@@ -116,10 +110,7 @@ export const getVisualizationListingColumn = () => {
               type="error"
               size="m"
             />
-            <FormattedMessage
-              id="dashboard.weightedVisualizationsTab.listing.type.error"
-              defaultMessage="Error"
-            />
+            <FormattedMessage id="visualizations.listing.type.error" defaultMessage="Error" />
           </span>
         </EuiToolTip>
       );
@@ -133,7 +124,7 @@ export const getVisualizationListingEmptyPrompt = (createItem: () => void) => (
     title={
       <h1 id="visualizeListingHeading" data-test-subj="emptyListPrompt">
         <FormattedMessage
-          id="dashboard.weightedVisualizationsTab.listing.createNew.title"
+          id="visualizations.listing.createNew.title"
           defaultMessage="Create your first visualization"
         />
       </h1>
@@ -141,7 +132,7 @@ export const getVisualizationListingEmptyPrompt = (createItem: () => void) => (
     body={
       <p>
         <FormattedMessage
-          id="dashboard.weightedVisualizationsTab.listing.createNew.description"
+          id="visualizations.listing.createNew.description"
           defaultMessage="You can create different visualizations based on your data."
         />
       </p>
@@ -149,7 +140,7 @@ export const getVisualizationListingEmptyPrompt = (createItem: () => void) => (
     actions={
       <EuiButton onClick={createItem} fill iconType="plusInCircle" data-test-subj="newItemButton">
         <FormattedMessage
-          id="dashboard.weightedVisualizationsTab.listing.createNew.createButtonLabel"
+          id="visualizations.listing.createNew.createButtonLabel"
           defaultMessage="Create new visualization"
         />
       </EuiButton>

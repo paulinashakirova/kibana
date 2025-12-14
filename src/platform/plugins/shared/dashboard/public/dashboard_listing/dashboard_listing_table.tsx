@@ -7,7 +7,7 @@
  * License v3.0 only", or the "Server Side Public License, v 1".
  */
 
-import React from 'react';
+import React, { useMemo, useCallback } from 'react';
 
 import {
   TableListViewKibanaProvider,
@@ -21,9 +21,13 @@ import {
   savedObjectsTaggingService,
   serverlessService,
 } from '../services/kibana_services';
+import { getDashboardBackupService } from '../services/dashboard_backup_service';
+import { confirmCreateWithUnsaved } from './confirm_overlays';
 import { DashboardUnsavedListing } from './dashboard_unsaved_listing';
+import { DashboardListingEmptyPrompt } from './dashboard_listing_empty_prompt';
 import { useDashboardListingTable } from './hooks/use_dashboard_listing_table';
-import type { DashboardListingProps, DashboardListingUserContent } from './types';
+import { getDashboardCapabilities } from '../utils/get_dashboard_capabilities';
+import type { DashboardListingProps, DashboardSavedObjectUserContent } from './types';
 
 export const DashboardListingTable = ({
   disableCreateDashboardButton,
@@ -45,14 +49,36 @@ export const DashboardListingTable = ({
     tableListViewTableProps: { title: tableCaption, ...tableListViewTable },
     contentInsightsClient,
   } = useDashboardListingTable({
-    disableCreateDashboardButton,
     goToDashboard,
     getDashboardUrl,
     urlStateEnabled,
-    useSessionStorageIntegration,
     initialFilter,
-    showCreateDashboardButton,
   });
+
+  const dashboardBackupService = useMemo(() => getDashboardBackupService(), []);
+
+  const createItem = useCallback(() => {
+    if (useSessionStorageIntegration && dashboardBackupService.dashboardHasUnsavedEdits()) {
+      confirmCreateWithUnsaved(() => {
+        dashboardBackupService.clearState();
+        goToDashboard();
+      }, goToDashboard);
+      return;
+    }
+    goToDashboard();
+  }, [dashboardBackupService, goToDashboard, useSessionStorageIntegration]);
+
+  const { showWriteControls } = getDashboardCapabilities();
+
+  const emptyPrompt = (
+    <DashboardListingEmptyPrompt
+      createItem={createItem}
+      goToDashboard={goToDashboard}
+      refreshUnsavedDashboards={refreshUnsavedDashboards}
+      unsavedDashboardIds={unsavedDashboardIds}
+      useSessionStorageIntegration={useSessionStorageIntegration}
+    />
+  );
 
   return (
     <I18nProvider>
@@ -69,9 +95,15 @@ export const DashboardListingTable = ({
             unsavedDashboardIds={unsavedDashboardIds}
             refreshUnsavedDashboards={refreshUnsavedDashboards}
           />
-          <TableListViewTable<DashboardListingUserContent>
+          <TableListViewTable<DashboardSavedObjectUserContent>
             tableCaption={tableCaption}
             {...tableListViewTable}
+            createItem={
+              !showWriteControls || !showCreateDashboardButton || disableCreateDashboardButton
+                ? undefined
+                : createItem
+            }
+            emptyPrompt={emptyPrompt}
             onFetchSuccess={() => {}}
             setPageDataTestSubject={() => {}}
           />

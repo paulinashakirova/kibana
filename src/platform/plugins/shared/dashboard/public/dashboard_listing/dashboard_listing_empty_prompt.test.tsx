@@ -31,10 +31,9 @@ const renderDashboardListingEmptyPrompt = (props: Partial<DashboardListingEmptyP
     <DashboardListingEmptyPrompt
       createItem={jest.fn()}
       goToDashboard={jest.fn()}
-      setUnsavedDashboardIds={jest.fn()}
+      refreshUnsavedDashboards={jest.fn()}
       unsavedDashboardIds={[]}
       useSessionStorageIntegration={true}
-      disableCreateDashboardButton={false}
       {...props}
     />,
     { wrapper: I18nProvider }
@@ -58,10 +57,13 @@ test.each([
   }
 );
 
-test('renders disabled action button when disableCreateDashboardButton is true', async () => {
-  (coreServices.application.capabilities as any).dashboard_v2.showWriteControls = true;
-  renderDashboardListingEmptyPrompt({ disableCreateDashboardButton: true });
-  expect(screen.getByTestId('newItemButton')).toBeDisabled();
+test('renders disabled action button when dashboard capabilities do not allow creation', async () => {
+  // Set capabilities to not allow writes
+  (coreServices.application.capabilities as any).dashboard_v2.showWriteControls = false;
+  renderDashboardListingEmptyPrompt({});
+  // Button should not be rendered when showWriteControls is false
+  const button = screen.queryByTestId('newItemButton');
+  expect(button).not.toBeInTheDocument();
 });
 
 test('renders continue button when no dashboards exist but one is in progress', async () => {

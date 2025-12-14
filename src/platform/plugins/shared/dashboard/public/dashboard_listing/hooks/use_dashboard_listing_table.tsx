@@ -7,59 +7,42 @@
  * License v3.0 only", or the "Server Side Public License, v 1".
  */
 
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useLocation } from 'react-router-dom';
-import type { EuiBasicTableColumn } from '@elastic/eui';
+import { useCallback, useMemo, useState } from 'react';
 import type { OpenContentEditorParams } from '@kbn/content-management-content-editor';
 import { ContentInsightsClient } from '@kbn/content-management-content-insights-public';
 import type { TableListViewTableProps } from '@kbn/content-management-table-list-view-table';
 import type { Reference } from '@kbn/content-management-utils';
 import type { ViewMode } from '@kbn/presentation-publishing';
+import { asyncMap } from '@kbn/std';
+import { reportPerformanceMetricEvent } from '@kbn/ebt-tools';
 
+import { DASHBOARD_SAVED_OBJECT_TYPE } from '../../../common/constants';
 import { getDashboardBackupService } from '../../services/dashboard_backup_service';
 import { getDashboardRecentlyAccessedService } from '../../services/dashboard_recently_accessed_service';
-import {
-  coreServices,
-  embeddableService,
-  visualizationsService,
-} from '../../services/kibana_services';
+import { coreServices } from '../../services/kibana_services';
 import { logger } from '../../services/logger';
 import { getDashboardCapabilities } from '../../utils/get_dashboard_capabilities';
+import { SAVED_OBJECT_DELETE_TIME } from '../../utils/telemetry_constants';
 import {
   dashboardListingErrorStrings,
   dashboardListingTableStrings,
 } from '../_dashboard_listing_strings';
-import { confirmCreateWithUnsaved } from '../confirm_overlays';
-import { DashboardListingEmptyPrompt } from '../dashboard_listing_empty_prompt';
-import {
-  TAB_IDS,
-  type TabId,
-  type DashboardListingUserContent,
-  type DashboardVisualizationUserContent,
-  type DashboardSavedObjectUserContent,
-} from '../types';
+import { type DashboardSavedObjectUserContent } from '../types';
 import {
   checkForDuplicateDashboardTitle,
   dashboardClient,
   findService,
 } from '../../dashboard_client';
 import { findDashboardListingItems } from './helpers/find_items';
-import { deleteDashboardListingItems } from './helpers/delete_items';
-import { editDashboardListingItem } from './helpers/edit_item';
-import { navigateToVisualization } from './helpers/navigation';
-import { getEntityNames } from './helpers/entity_names';
-import {
-  getVisualizationListingColumn,
-  getVisualizationListingEmptyPrompt,
-} from '../utils/visualization_listing_helpers';
 
-type GetDetailViewLink = TableListViewTableProps<DashboardListingUserContent>['getDetailViewLink'];
+type GetDetailViewLink =
+  TableListViewTableProps<DashboardSavedObjectUserContent>['getDetailViewLink'];
 
 const SAVED_OBJECTS_LIMIT_SETTING = 'savedObjects:listingLimit';
 const SAVED_OBJECTS_PER_PAGE_SETTING = 'savedObjects:perPage';
 
 type DashboardListingViewTableProps = Omit<
-  TableListViewTableProps<DashboardListingUserContent>,
+  TableListViewTableProps<DashboardSavedObjectUserContent>,
   'tableCaption' | 'onFetchSuccess' | 'setPageDataTestSubject'
 > & { title: string };
 
@@ -72,31 +55,23 @@ interface UseDashboardListingTableReturnType {
 
 export const useDashboardListingTable = ({
   dashboardListingId = 'dashboard',
-  disableCreateDashboardButton,
   getDashboardUrl,
   goToDashboard,
   headingId = 'dashboardListingHeading',
   initialFilter,
   urlStateEnabled,
-  useSessionStorageIntegration,
-  showCreateDashboardButton = true,
-  contentTypeFilter,
 }: {
   dashboardListingId?: string;
-  disableCreateDashboardButton?: boolean;
   getDashboardUrl: (dashboardId: string, usesTimeRestore: boolean) => string;
   goToDashboard: (dashboardId?: string, viewMode?: ViewMode) => void;
   headingId?: string;
   initialFilter?: string;
   urlStateEnabled?: boolean;
-  useSessionStorageIntegration?: boolean;
-  showCreateDashboardButton?: boolean;
-  contentTypeFilter?: TabId;
 }): UseDashboardListingTableReturnType => {
-  const { getTableListTitle } = dashboardListingTableStrings;
+  const { getTableListTitle, getEntityName, getEntityNamePlural } = dashboardListingTableStrings;
 
-  const { entityName, entityNamePlural } = getEntityNames(contentTypeFilter);
-
+  const entityName = getEntityName();
+  const entityNamePlural = getEntityNamePlural();
   const title = getTableListTitle();
 
   const dashboardBackupService = useMemo(() => getDashboardBackupService(), []);
@@ -107,44 +82,6 @@ export const useDashboardListingTable = ({
 
   const listingLimit = coreServices.uiSettings.get(SAVED_OBJECTS_LIMIT_SETTING);
   const initialPageSize = coreServices.uiSettings.get(SAVED_OBJECTS_PER_PAGE_SETTING);
-
-  // Store close function for new visualization modal (to close on navigation)
-  const closeNewVisModal = useRef(() => {});
-  const { pathname } = useLocation();
-
-  const createItem = useCallback(
-    (contentTypeTab?: TabId) => {
-      const contentType = contentTypeTab ?? contentTypeFilter;
-
-      switch (contentType) {
-        case TAB_IDS.VISUALIZATIONS:
-          closeNewVisModal.current = visualizationsService.showNewVisModal();
-          return;
-
-        case TAB_IDS.ANNOTATIONS:
-          coreServices.application.navigateToApp('lens', { path: '#/' });
-          return;
-
-        case TAB_IDS.DASHBOARDS:
-        default:
-          if (useSessionStorageIntegration && dashboardBackupService.dashboardHasUnsavedEdits()) {
-            confirmCreateWithUnsaved(() => {
-              dashboardBackupService.clearState();
-              goToDashboard();
-            }, goToDashboard);
-            return;
-          }
-          goToDashboard();
-      }
-    },
-    [dashboardBackupService, goToDashboard, useSessionStorageIntegration, contentTypeFilter]
-  );
-
-  useEffect(() => {
-    return () => {
-      closeNewVisModal.current();
-    };
-  }, [pathname]);
 
   const updateItemMeta = useCallback(
     async ({ id, ...updatedState }: Parameters<Required<OpenContentEditorParams>['onSave']>[0]) => {
@@ -202,79 +139,55 @@ export const useDashboardListingTable = ({
   );
 
   const deleteItems = useCallback(
-    async (itemsToDelete: Array<{ id: string; type?: string }>) => {
-      await deleteDashboardListingItems({ itemsToDelete });
+    async (dashboardsToDelete: Array<{ id: string }>) => {
+      try {
+        const deleteStartTime = window.performance.now();
+
+        await asyncMap(dashboardsToDelete, async ({ id }) => {
+          await dashboardClient.delete(id);
+          dashboardBackupService.clearState(id);
+        });
+
+        const deleteDuration = window.performance.now() - deleteStartTime;
+        reportPerformanceMetricEvent(coreServices.analytics, {
+          eventName: SAVED_OBJECT_DELETE_TIME,
+          duration: deleteDuration,
+          meta: {
+            saved_object_type: DASHBOARD_SAVED_OBJECT_TYPE,
+            total: dashboardsToDelete.length,
+          },
+        });
+      } catch (error) {
+        coreServices.notifications.toasts.addError(error, {
+          title: dashboardListingErrorStrings.getErrorDeletingDashboardToast(),
+        });
+      }
+
       setUnsavedDashboardIds(dashboardBackupService.getDashboardIdsWithUnsavedChanges());
     },
     [dashboardBackupService]
   );
 
   const editItem = useCallback(
-    (item: DashboardListingUserContent) => editDashboardListingItem(item, goToDashboard),
+    ({ id }: { id: string | undefined }) => goToDashboard(id, 'edit'),
     [goToDashboard]
   );
 
   const getDetailViewLink = useCallback<NonNullable<GetDetailViewLink>>(
-    (entity: DashboardListingUserContent) => {
-      if (entity.type !== 'dashboard') {
-        return undefined;
-      }
-
-      const dashboard = entity as DashboardSavedObjectUserContent;
-      return getDashboardUrl(dashboard.id, dashboard.attributes.timeRestore);
-    },
+    ({ id, attributes: { timeRestore } }) => getDashboardUrl(id, timeRestore),
     [getDashboardUrl]
   );
 
-  const getOnClickTitle = useCallback((item: DashboardListingUserContent) => {
-    const { id, type } = item;
-
-    // Dashboards: let the link handle it (no onClick needed)
-    if (type === 'dashboard') {
-      return undefined;
-    }
-
-    // Annotation groups are view-only - don't allow clicking
-    if (type === 'event-annotation-group') {
-      return undefined;
-    }
-
-    // Handle visualizations (including lens, maps, links, etc.)
-    const visItem = item as DashboardVisualizationUserContent;
-
-    // Don't allow clicking on read-only visualizations
-    if (visItem.attributes.readOnly) {
-      return undefined;
-    }
-
-    // Use editor config if available (e.g., maps have editApp='maps')
-    const { editor } = visItem;
-    if (editor && 'editUrl' in editor && editor.editApp) {
-      return () =>
-        coreServices.application.navigateToApp(editor.editApp!, { path: editor.editUrl });
-    }
-
-    // Default: open in visualize app
-    return () => navigateToVisualization(embeddableService.getStateTransfer(), id!);
-  }, []);
-
-  const rowItemActions = useCallback((item: DashboardListingUserContent) => {
+  const rowItemActions = useCallback((item: DashboardSavedObjectUserContent) => {
     const { showWriteControls } = getDashboardCapabilities();
-    const { managed, type } = item;
-    const isReadOnlyVisualization =
-      type !== 'dashboard' &&
-      type !== 'event-annotation-group' &&
-      (item as DashboardVisualizationUserContent).attributes.readOnly;
+    const { managed } = item;
 
-    // Disable edit for managed items or read-only visualizations
-    if (!showWriteControls || managed || isReadOnlyVisualization) {
+    if (!showWriteControls || managed) {
       return {
         edit: {
           enabled: false,
           reason: managed
             ? dashboardListingTableStrings.getManagementItemDisabledEditMessage()
-            : isReadOnlyVisualization
-            ? dashboardListingTableStrings.getReadOnlyVisualizationMessage()
             : undefined,
         },
       };
@@ -287,45 +200,24 @@ export const useDashboardListingTable = ({
     (
       searchTerm: string,
       options?: { references?: Reference[]; referencesToExclude?: Reference[] }
-    ) => findDashboardListingItems(searchTerm, contentTypeFilter ?? TAB_IDS.DASHBOARDS, options),
-    [contentTypeFilter]
+    ) => findDashboardListingItems(searchTerm, options),
+    []
   );
 
   const tableListViewTableProps: DashboardListingViewTableProps = useMemo(() => {
     const { showWriteControls } = getDashboardCapabilities();
     return {
-      contentEditor:
-        contentTypeFilter === TAB_IDS.DASHBOARDS
-          ? {
-              isReadonly: !showWriteControls,
-              onSave: updateItemMeta,
-              customValidators: contentEditorValidators,
-            }
-          : {
-              enabled: false,
-            },
-      createItem: !showWriteControls || !showCreateDashboardButton ? undefined : createItem,
+      contentEditor: {
+        isReadonly: !showWriteControls,
+        onSave: updateItemMeta,
+        customValidators: contentEditorValidators,
+      },
       deleteItems: !showWriteControls ? undefined : deleteItems,
       editItem: !showWriteControls ? undefined : editItem,
-      emptyPrompt:
-        contentTypeFilter === TAB_IDS.VISUALIZATIONS ||
-        contentTypeFilter === TAB_IDS.ANNOTATIONS ? (
-          getVisualizationListingEmptyPrompt(createItem)
-        ) : (
-          <DashboardListingEmptyPrompt
-            createItem={createItem}
-            disableCreateDashboardButton={disableCreateDashboardButton}
-            goToDashboard={goToDashboard}
-            setUnsavedDashboardIds={setUnsavedDashboardIds}
-            unsavedDashboardIds={unsavedDashboardIds}
-            useSessionStorageIntegration={useSessionStorageIntegration}
-          />
-        ),
       entityName,
       entityNamePlural,
       findItems,
       getDetailViewLink,
-      getOnClickTitle,
       rowItemActions,
       headingId,
       id: dashboardListingId,
@@ -334,38 +226,26 @@ export const useDashboardListingTable = ({
       listingLimit,
       title,
       urlStateEnabled,
-      createdByEnabled: contentTypeFilter === TAB_IDS.DASHBOARDS,
+      createdByEnabled: true,
       recentlyAccessed: getDashboardRecentlyAccessedService(),
-      customTableColumn:
-        contentTypeFilter === TAB_IDS.VISUALIZATIONS
-          ? (getVisualizationListingColumn() as EuiBasicTableColumn<DashboardListingUserContent>)
-          : undefined,
     };
   }, [
     contentEditorValidators,
-    contentTypeFilter,
-    createItem,
     dashboardListingId,
     deleteItems,
-    disableCreateDashboardButton,
     editItem,
     entityName,
     entityNamePlural,
-    goToDashboard,
     findItems,
     getDetailViewLink,
-    getOnClickTitle,
     headingId,
     initialFilter,
     initialPageSize,
     listingLimit,
     rowItemActions,
-    showCreateDashboardButton,
     title,
-    unsavedDashboardIds,
     updateItemMeta,
     urlStateEnabled,
-    useSessionStorageIntegration,
   ]);
 
   const refreshUnsavedDashboards = useCallback(

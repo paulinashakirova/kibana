@@ -1,0 +1,17 @@
+{
+  "extends": "@kbn/tsconfig-base/tsconfig.json",
+  "compilerOptions": {
+    "outDir": "target/types"
+  },
+  "include": ["public/**/*"],
+  "kbn_references": [
+    "@kbn/core",
+    "@kbn/visualizations-plugin",
+    "@kbn/dashboard-plugin",
+    "@kbn/embeddable-plugin",
+    "@kbn/saved-objects-tagging-oss-plugin",
+    "@kbn/i18n",
+    "@kbn/content-management-tabbed-table-list-view"
+  ],
+  "exclude": ["target/**/*"]
+}
