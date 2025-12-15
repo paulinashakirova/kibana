@@ -38,7 +38,7 @@ export interface EventAnnotationListingStartDependencies {
 
 interface SetupDependencies {
   visualizations: VisualizationsSetup;
-  dashboard: DashboardSetup;
+  dashboard?: DashboardSetup;
 }
 
 /** @public */
@@ -97,7 +97,9 @@ export class EventAnnotationListingPlugin
       },
     };
     dependencies.visualizations.listingViewRegistry.add(annotationGroupsTabConfig);
-    dependencies.dashboard.listingViewRegistry.add(annotationGroupsTabConfig);
+    if (dependencies.dashboard) {
+      dependencies.dashboard.listingViewRegistry.add(annotationGroupsTabConfig);
+    }
   }
 
   public start(core: CoreStart, plugins: object): void {

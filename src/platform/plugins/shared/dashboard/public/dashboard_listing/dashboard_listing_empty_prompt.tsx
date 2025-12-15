@@ -34,20 +34,18 @@ import type { DashboardListingProps } from './types';
 
 export interface DashboardListingEmptyPromptProps {
   createItem: () => void;
-  disableCreateDashboardButton?: boolean;
   unsavedDashboardIds: string[];
   goToDashboard: DashboardListingProps['goToDashboard'];
-  setUnsavedDashboardIds: React.Dispatch<React.SetStateAction<string[]>>;
+  refreshUnsavedDashboards: () => void;
   useSessionStorageIntegration: DashboardListingProps['useSessionStorageIntegration'];
 }
 
 export const DashboardListingEmptyPrompt = ({
   useSessionStorageIntegration,
-  setUnsavedDashboardIds,
+  refreshUnsavedDashboards,
   unsavedDashboardIds,
   goToDashboard,
   createItem,
-  disableCreateDashboardButton,
 }: DashboardListingEmptyPromptProps) => {
   const isEditingFirstDashboard = useMemo(
     () => useSessionStorageIntegration && unsavedDashboardIds.length === 1,
@@ -57,13 +55,7 @@ export const DashboardListingEmptyPrompt = ({
   const getEmptyAction = useCallback(() => {
     if (!isEditingFirstDashboard) {
       return (
-        <EuiButton
-          onClick={createItem}
-          fill
-          iconType="plusInCircle"
-          data-test-subj="newItemButton"
-          disabled={disableCreateDashboardButton}
-        >
+        <EuiButton onClick={createItem} fill iconType="plusInCircle" data-test-subj="newItemButton">
           {noItemsStrings.getCreateNewDashboardText()}
         </EuiButton>
       );
@@ -78,7 +70,7 @@ export const DashboardListingEmptyPrompt = ({
               confirmDiscardUnsavedChanges(() => {
                 const dashboardBackupService = getDashboardBackupService();
                 dashboardBackupService.clearState(DASHBOARD_PANELS_UNSAVED_ID);
-                setUnsavedDashboardIds(dashboardBackupService.getDashboardIdsWithUnsavedChanges());
+                refreshUnsavedDashboards();
               })
             }
             data-test-subj="discardDashboardPromptButton"
@@ -101,13 +93,7 @@ export const DashboardListingEmptyPrompt = ({
         </EuiFlexItem>
       </EuiFlexGroup>
     );
-  }, [
-    isEditingFirstDashboard,
-    createItem,
-    disableCreateDashboardButton,
-    goToDashboard,
-    setUnsavedDashboardIds,
-  ]);
+  }, [isEditingFirstDashboard, createItem, goToDashboard, refreshUnsavedDashboards]);
 
   if (!getDashboardCapabilities().showWriteControls) {
     return (

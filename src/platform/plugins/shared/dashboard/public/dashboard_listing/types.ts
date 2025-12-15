@@ -10,18 +10,7 @@
 import type { PropsWithChildren } from 'react';
 import type { UserContentCommonSchema } from '@kbn/content-management-table-list-view-common';
 import type { ViewMode } from '@kbn/presentation-publishing';
-import type { VisualizationListItem, VisualizationStage } from '@kbn/visualizations-plugin/public';
 import type { DashboardListingViewRegistry } from '../plugin';
-
-export type { VisualizationListItem, VisualizationStage };
-
-export const TAB_IDS = {
-  DASHBOARDS: 'dashboards',
-  VISUALIZATIONS: 'visualizations',
-  ANNOTATIONS: 'annotations',
-} as const;
-
-export type TabId = (typeof TAB_IDS)[keyof typeof TAB_IDS];
 
 export type DashboardListingProps = PropsWithChildren<{
   disableCreateDashboardButton?: boolean;
@@ -34,47 +23,11 @@ export type DashboardListingProps = PropsWithChildren<{
   listingViewRegistry: DashboardListingViewRegistry;
 }>;
 
-interface DashboardListingItemBase extends UserContentCommonSchema {
-  managed?: boolean;
-  attributes: {
-    title: string;
-    description?: string;
-  };
-}
-
-export interface DashboardSavedObjectUserContent extends DashboardListingItemBase {
+export interface DashboardSavedObjectUserContent extends UserContentCommonSchema {
   type: 'dashboard';
-  attributes: DashboardListingItemBase['attributes'] & {
+  attributes: UserContentCommonSchema['attributes'] & {
     timeRestore: boolean;
   };
 }
 
-export interface DashboardVisualizationUserContent extends DashboardListingItemBase {
-  type: string;
-  icon: string;
-  savedObjectType: string;
-  title: string;
-  typeTitle: string;
-  image?: string;
-  stage?: VisualizationStage;
-  error?: string;
-  editor?: VisualizationListItem['editor'];
-  attributes: DashboardListingItemBase['attributes'] & {
-    visType?: string;
-    readOnly?: boolean;
-  };
-}
-
-export interface DashboardAnnotationGroupUserContent extends DashboardListingItemBase {
-  type: 'event-annotation-group';
-  attributes: DashboardListingItemBase['attributes'] & {
-    timeRestore: false;
-    indexPatternId?: string;
-    dataViewSpec?: { id?: string; name?: string };
-  };
-}
-
-export type DashboardListingUserContent =
-  | DashboardSavedObjectUserContent
-  | DashboardVisualizationUserContent
-  | DashboardAnnotationGroupUserContent;
+export type DashboardListingUserContent = DashboardSavedObjectUserContent | UserContentCommonSchema;

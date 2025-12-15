@@ -14,7 +14,10 @@ import { Redirect } from 'react-router-dom';
 import { Router, Routes, Route } from '@kbn/shared-ux-router';
 import type { AppMountParameters, CoreStart } from '@kbn/core/public';
 import { EuiButton, EuiCallOut, EuiSpacer } from '@elastic/eui';
-import { DashboardListingTable } from '@kbn/dashboard-plugin/public';
+import {
+  DashboardListingTable,
+  type DashboardListingViewRegistry,
+} from '@kbn/dashboard-plugin/public';
 import { KibanaPageTemplate } from '@kbn/shared-ux-page-kibana-template';
 
 import { KibanaRenderContextProvider } from '@kbn/react-kibana-context-render';
@@ -125,13 +128,14 @@ const DashboardsDemo = ({
 };
 
 const PortableDashboardListingDemo = ({ history }: { history: AppMountParameters['history'] }) => {
+  const listingViewRegistry: DashboardListingViewRegistry = new Set();
   return (
     <DashboardListingTable
       goToDashboard={(dashboardId) =>
         alert(`Here's where I would redirect you to ${dashboardId ?? 'a new Dashboard'}`)
       }
       getDashboardUrl={() => 'https://www.elastic.co/'}
-      listingViewRegistry={new Set()}
+      listingViewRegistry={listingViewRegistry}
     >
       <EuiButton onClick={() => history.push(DASHBOARD_DEMO_PATH)}>
         Go back to usage demos

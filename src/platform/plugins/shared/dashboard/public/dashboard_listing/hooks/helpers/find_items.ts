@@ -9,23 +9,12 @@
 
 import type { Reference } from '@kbn/content-management-utils';
 import { reportPerformanceMetricEvent } from '@kbn/ebt-tools';
-import { toTableListViewSavedObject } from '@kbn/visualizations-plugin/public';
 
 import { SAVED_OBJECT_LOADED_TIME } from '../../../utils/telemetry_constants';
 import { DASHBOARD_SAVED_OBJECT_TYPE } from '../../../../common/constants';
-import {
-  coreServices,
-  eventAnnotationService,
-  savedObjectsTaggingService,
-  visualizationsService,
-} from '../../../services/kibana_services';
+import { coreServices, savedObjectsTaggingService } from '../../../services/kibana_services';
 import { findService } from '../../../dashboard_client';
-import {
-  TAB_IDS,
-  type TabId,
-  type DashboardListingUserContent,
-  type DashboardVisualizationUserContent,
-} from '../../types';
+import { type DashboardSavedObjectUserContent } from '../../types';
 
 const SAVED_OBJECTS_LIMIT_SETTING = 'savedObjects:listingLimit';
 
@@ -33,64 +22,11 @@ const getReferenceIds = (refs?: Reference[]) => refs?.map((r) => r.id);
 
 export async function findDashboardListingItems(
   searchTerm: string,
-  tabId: TabId,
   options?: { references?: Reference[]; referencesToExclude?: Reference[] }
-): Promise<{ total: number; hits: DashboardListingUserContent[] }> {
+): Promise<{ total: number; hits: DashboardSavedObjectUserContent[] }> {
   const { references, referencesToExclude } = options ?? {};
   const limit = coreServices.uiSettings.get<number>(SAVED_OBJECTS_LIMIT_SETTING);
   const startTime = window.performance.now();
-
-  const reportSearchDuration = (type: string) => {
-    reportPerformanceMetricEvent(coreServices.analytics, {
-      eventName: SAVED_OBJECT_LOADED_TIME,
-      duration: window.performance.now() - startTime,
-      meta: { saved_object_type: type },
-    });
-  };
-
-  if (tabId === TAB_IDS.VISUALIZATIONS) {
-    const response = await visualizationsService.findListItems(
-      searchTerm,
-      limit,
-      references,
-      referencesToExclude
-    );
-    reportSearchDuration('visualization');
-
-    return {
-      total: response.total,
-      hits: response.hits.map((hit) => {
-        const item = toTableListViewSavedObject(hit) as DashboardVisualizationUserContent;
-        return { ...item, type: item.savedObjectType || item.type };
-      }),
-    };
-  }
-
-  if (tabId === TAB_IDS.ANNOTATIONS && eventAnnotationService) {
-    const service = await eventAnnotationService.getService();
-    const response = await service.findAnnotationGroupContent(
-      searchTerm,
-      limit,
-      getReferenceIds(references),
-      getReferenceIds(referencesToExclude)
-    );
-    reportSearchDuration('event-annotation-group');
-
-    return {
-      total: response.total,
-      hits: response.hits.map((hit) => ({
-        ...hit,
-        type: 'event-annotation-group' as const,
-        attributes: {
-          title: hit.attributes.title,
-          description: hit.attributes.description,
-          timeRestore: false as const,
-          indexPatternId: hit.attributes.indexPatternId,
-          dataViewSpec: hit.attributes.dataViewSpec,
-        },
-      })),
-    };
-  }
 
   const { total, dashboards } = await findService.search({
     search: searchTerm,
@@ -100,7 +36,12 @@ export async function findDashboardListingItems(
       excluded: getReferenceIds(referencesToExclude) ?? [],
     },
   });
-  reportSearchDuration(DASHBOARD_SAVED_OBJECT_TYPE);
+
+  reportPerformanceMetricEvent(coreServices.analytics, {
+    eventName: SAVED_OBJECT_LOADED_TIME,
+    duration: window.performance.now() - startTime,
+    meta: { saved_object_type: DASHBOARD_SAVED_OBJECT_TYPE },
+  });
 
   const tagApi = savedObjectsTaggingService?.getTaggingApi();
   return {

@@ -102,7 +102,7 @@ export interface DashboardStartDependencies {
   data: DataPublicPluginStart;
   dataViewEditor: DataViewEditorStart;
   embeddable: EmbeddableStart;
-  eventAnnotation: EventAnnotationService;
+  eventAnnotation?: EventAnnotationService;
   fieldFormats: FieldFormatsStart;
   inspector: InspectorStartContract;
   navigation: NavigationPublicPluginStart;
@@ -117,7 +117,7 @@ export interface DashboardStartDependencies {
   unifiedSearch: UnifiedSearchPublicPluginStart;
   urlForwarding: UrlForwardingStart;
   usageCollection?: UsageCollectionStart;
-  visualizations: VisualizationsStart;
+  visualizations?: VisualizationsStart;
   customBranding: CustomBrandingStart;
   serverless?: ServerlessPluginStart;
   noDataPage?: NoDataPagePluginStart;

@@ -14,7 +14,6 @@
       "dataViews",
       "dataViewEditor",
       "embeddable",
-      "eventAnnotation",
       "fieldFormats",
       "controls",
       "inspector",
@@ -27,8 +26,7 @@
       "uiActions",
       "urlForwarding",
       "presentationUtil",
-      "unifiedSearch",
-      "visualizations"
+      "unifiedSearch"
     ],
     "optionalPlugins": [
       "home",
@@ -42,7 +40,8 @@
       "noDataPage",
       "observabilityAIAssistant",
       "lens",
-      "cps"
+      "cps",
+      "visualizations"
     ],
     "requiredBundles": [
       "kibanaReact",

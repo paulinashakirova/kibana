@@ -19,7 +19,8 @@ import { QueryClientProvider } from '@kbn/react-query';
 import { coreServices } from '../services/kibana_services';
 import { dashboardQueryClient } from '../services/dashboard_query_client';
 import { getDashboardListingTabs } from './get_dashboard_listing_tabs';
-import { TAB_IDS, type DashboardListingProps } from './types';
+import { type DashboardListingProps } from './types';
+import { DASHBOARD_APP_ID } from '../../common/page_bundle_constants';
 
 export const DashboardListing = ({
   children,
@@ -54,12 +55,9 @@ export const DashboardListing = ({
     ]
   );
 
-  const activeTabId = useMemo(() => {
-    const validTabIds = tabs.map((tab) => tab.id);
-    return activeTabParam && validTabIds.includes(activeTabParam)
-      ? activeTabParam
-      : TAB_IDS.DASHBOARDS;
-  }, [activeTabParam, tabs]);
+  const activeTabId = tabs.some((tab) => tab.id === activeTabParam)
+    ? activeTabParam!
+    : DASHBOARD_APP_ID;
 
   const changeActiveTab = useCallback((tabId: string) => {
     coreServices.application.navigateToUrl(`#/list/${tabId}`);

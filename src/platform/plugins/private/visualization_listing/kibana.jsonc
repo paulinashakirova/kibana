@@ -1,0 +1,17 @@
+{
+  "type": "plugin",
+  "id": "@kbn/visualization-listing-plugin",
+  "owner": ["@elastic/kibana-visualizations"],
+  "group": "platform",
+  "visibility": "private",
+  "description": "The listing page integration for visualizations in dashboard app.",
+  "plugin": {
+    "id": "visualizationListing",
+    "browser": true,
+    "server": false,
+    "requiredPlugins": ["visualizations", "embeddable", "contentManagement"],
+    "optionalPlugins": ["dashboard", "savedObjectsTaggingOss"],
+    "requiredBundles": [],
+    "extraPublicDirs": []
+  }
+}

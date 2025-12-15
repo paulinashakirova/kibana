@@ -7,9 +7,7 @@
  * License v3.0 only", or the "Server Side Public License, v 1".
  */
 
-import React, { useMemo } from 'react';
-import { css } from '@emotion/react';
-import { logicalSizeCSS, useEuiTheme } from '@elastic/eui';
+import React, { useCallback, useMemo } from 'react';
 import { i18n } from '@kbn/i18n';
 import type {
   TableListTab,
@@ -29,9 +27,17 @@ import {
   serverlessService,
   usageCollectionService,
 } from '../services/kibana_services';
+import { getDashboardBackupService } from '../services/dashboard_backup_service';
+import { confirmCreateWithUnsaved } from './confirm_overlays';
 import { DashboardUnsavedListing } from './dashboard_unsaved_listing';
+import { DashboardListingEmptyPrompt } from './dashboard_listing_empty_prompt';
 import { useDashboardListingTable } from './hooks/use_dashboard_listing_table';
-import { TAB_IDS, type DashboardListingProps, type DashboardListingUserContent } from './types';
+import {
+  type DashboardListingProps,
+  type DashboardListingUserContent,
+  type DashboardSavedObjectUserContent,
+} from './types';
+import { getDashboardCapabilities } from '../utils/get_dashboard_capabilities';
 
 type GetDashboardListingTabsParams = Pick<
   DashboardListingProps,
@@ -68,10 +74,21 @@ const DashboardsTabContent = ({
   } = useDashboardListingTable({
     goToDashboard,
     getDashboardUrl,
-    useSessionStorageIntegration,
     initialFilter,
-    contentTypeFilter: TAB_IDS.DASHBOARDS,
   });
+
+  const dashboardBackupService = useMemo(() => getDashboardBackupService(), []);
+
+  const createItem = useCallback(() => {
+    if (useSessionStorageIntegration && dashboardBackupService.dashboardHasUnsavedEdits()) {
+      confirmCreateWithUnsaved(() => {
+        dashboardBackupService.clearState();
+        goToDashboard();
+      }, goToDashboard);
+      return;
+    }
+    goToDashboard();
+  }, [dashboardBackupService, goToDashboard, useSessionStorageIntegration]);
 
   const dashboardFavoritesClient = useMemo(() => {
     return new FavoritesClient(DASHBOARD_APP_ID, DASHBOARD_SAVED_OBJECT_TYPE, {
@@ -80,6 +97,18 @@ const DashboardsTabContent = ({
       userProfile: coreServices.userProfile,
     });
   }, []);
+
+  const { showWriteControls } = getDashboardCapabilities();
+
+  const emptyPrompt = (
+    <DashboardListingEmptyPrompt
+      createItem={createItem}
+      goToDashboard={goToDashboard}
+      refreshUnsavedDashboards={refreshUnsavedDashboards}
+      unsavedDashboardIds={unsavedDashboardIds}
+      useSessionStorageIntegration={useSessionStorageIntegration}
+    />
+  );
 
   return (
     <TableListViewKibanaProvider
@@ -92,53 +121,13 @@ const DashboardsTabContent = ({
         unsavedDashboardIds={unsavedDashboardIds}
         refreshUnsavedDashboards={refreshUnsavedDashboards}
       />
-      <TableListViewTable<DashboardListingUserContent>
+      <TableListViewTable<DashboardSavedObjectUserContent>
         tableCaption={tableListViewTableProps.title}
         {...tableListViewTableProps}
+        createItem={showWriteControls ? createItem : undefined}
+        emptyPrompt={emptyPrompt}
         {...parentProps}
       />
-    </TableListViewKibanaProvider>
-  );
-};
-
-const VisualizationsTabContent = ({
-  goToDashboard,
-  getDashboardUrl,
-  useSessionStorageIntegration,
-  initialFilter,
-  parentProps,
-}: TabContentProps) => {
-  const { euiTheme } = useEuiTheme();
-  const { tableListViewTableProps } = useDashboardListingTable({
-    goToDashboard,
-    getDashboardUrl,
-    useSessionStorageIntegration,
-    initialFilter,
-    contentTypeFilter: TAB_IDS.VISUALIZATIONS,
-  });
-
-  return (
-    <TableListViewKibanaProvider {...getBaseKibanaProviderProps()}>
-      <div
-        css={css`
-          .visListingTable__typeImage,
-          .visListingTable__typeIcon {
-            margin-right: ${euiTheme.size.s};
-            position: relative;
-            top: -1px;
-          }
-
-          .visListingTable__typeImage {
-            ${logicalSizeCSS(euiTheme.size.base, euiTheme.size.base)};
-          }
-        `}
-      >
-        <TableListViewTable<DashboardListingUserContent>
-          tableCaption={tableListViewTableProps.title}
-          {...tableListViewTableProps}
-          {...parentProps}
-        />
-      </div>
     </TableListViewKibanaProvider>
   );
 };
@@ -161,26 +150,15 @@ export const getDashboardListingTabs = ({
     title: i18n.translate('dashboard.listing.tabs.dashboards.title', {
       defaultMessage: 'Dashboards',
     }),
-    id: TAB_IDS.DASHBOARDS,
+    id: DASHBOARD_APP_ID,
     getTableList: (parentProps) => (
       <DashboardsTabContent {...commonProps} parentProps={parentProps} />
     ),
   };
 
-  const visualizationsTab: TableListTab<DashboardListingUserContent> = {
-    title: i18n.translate('dashboard.listing.tabs.visualizations.title', {
-      defaultMessage: 'Visualizations',
-    }),
-    id: TAB_IDS.VISUALIZATIONS,
-    getTableList: (parentProps) => (
-      <VisualizationsTabContent {...commonProps} parentProps={parentProps} />
-    ),
-  };
-
-  // Additional tabs from registry (e.g., annotation groups from Event Annotation Listing plugin)
   const registryTabs = listingViewRegistry
     ? Array.from(listingViewRegistry as Set<TableListTab>)
     : [];
 
-  return [dashboardsTab, visualizationsTab, ...registryTabs];
+  return [dashboardsTab, ...registryTabs];
 };
