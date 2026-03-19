@@ -16,35 +16,13 @@ import { useAiButtonGradientStyles, useSvgAiGradient } from './use_ai_gradient_s
 import { useAiButtonXsSizeCss } from './ai_button_xs_size_styles';
 import { SvgAiGradientDefs } from './svg_ai_gradient_defs';
 import { AiAssistantLogo } from './ai_assistant_logo';
-import type { AiButtonIconType, AiButtonProps, AiButtonVariant } from './types';
+import type { AiButtonIconType, AiButtonVariant } from './types';
 
 /**
- * ## AiButton → EUI Button Type Passthrough: Why This Architecture
- *
- * AiButton delegates to EuiButton, EuiButtonEmpty, or EuiButtonIcon based on props.
- * EUI buttons use `ExclusiveUnion<PropsForAnchor, PropsForButton>` so you pass either
- * link props (href, onClick for anchor) or button props (form, type, onClick for button).
- *
- * ### The Problem
- * 1. **Consumer abstraction**: Callers pass `onClick` and `buttonRef` without knowing
- *    whether the rendered element is `<button>` or `<a>`. A single handler/ref must work
- *    for both, so we type them as `MouseEventHandler<HTMLElement>` and `Ref<HTMLElement>`.
- * 2. **ExclusiveUnion**: EUI expects either anchor props (no `form`, `type`, etc.) or
- *    button props (no `href`, `target`, etc.). Spreading a union that includes both
- *    branches makes TS reject because `form` and `href` are mutually exclusive.
- * 3. **Ref invariance**: `Ref<HTMLElement>` is not assignable to `Ref<HTMLButtonElement>`
- *    or `Ref<HTMLAnchorElement>`—Ref is invariant, even though at runtime both element
- *    types extend HTMLElement and the ref works correctly.
- *
- * ### The Solution (Best Practice)
- * - **Types** (types.ts): `WithElementAgnosticHandlers` only relaxes event handlers and
- *   `buttonRef` to HTMLElement; we preserve `form`, `type`, etc. so they pass through.
- * - **Runtime filter**: `filterForButtonOrAnchor` strips the "other branch" props based
- *   on `href`, satisfying ExclusiveUnion at the call site.
- * - **Narrow assertion**: We assert to the target component's props type (not `any`)
- *   only where TS cannot prove assignability (Ref invariance). The assertion is
- *   necessary and safe: EUI passes the real element into our ref, and both
- *   HTMLButtonElement and HTMLAnchorElement extend HTMLElement.
+ * Type assertions on EUI call sites are required: `Ref` is invariant, so
+ * `Ref<HTMLElement>` is not assignable to `Ref<HTMLButtonElement | HTMLAnchorElement>`,
+ * even though both element types extend `HTMLElement` and the ref is safe at runtime.
+ * `filterForButtonOrAnchor` handles EUI's `ExclusiveUnion` (button vs anchor props).
  */
 
 const resolvedIconType = (iconType: AiButtonIconType): IconType =>
@@ -65,42 +43,42 @@ const BUTTON_ONLY_KEYS = [
   'type',
   'value',
 ] as const;
-type ButtonOnlyKey = (typeof BUTTON_ONLY_KEYS)[number];
 /** Anchor-only HTML attributes to omit when rendering as button. */
 const ANCHOR_ONLY_KEYS = ['href', 'target', 'rel', 'download', 'referrerPolicy', 'ping'] as const;
-type AnchorOnlyKey = (typeof ANCHOR_ONLY_KEYS)[number];
 
 /**
  * EUI buttons use ExclusiveUnion: anchor props (href) vs button props (form, type, etc.).
  * Filter rest so we pass only the branch that matches `href`, satisfying the union.
  */
-function filterForButtonOrAnchor<T extends Record<string, unknown>>(
-  rest: T,
-  hasHref: true
-): Omit<T, ButtonOnlyKey>;
-function filterForButtonOrAnchor<T extends Record<string, unknown>>(
-  rest: T,
-  hasHref: false
-): Omit<T, AnchorOnlyKey>;
-function filterForButtonOrAnchor<T extends Record<string, unknown>>(
-  rest: T,
+function filterForButtonOrAnchor(
+  rest: Record<string, unknown>,
   hasHref: boolean
-): Omit<T, ButtonOnlyKey> | Omit<T, AnchorOnlyKey> {
-  if (hasHref) {
-    const filtered = { ...rest };
-    for (const k of BUTTON_ONLY_KEYS) {
-      delete filtered[k];
-    }
-    return filtered as Omit<T, ButtonOnlyKey>;
-  }
+): Record<string, unknown> {
   const filtered = { ...rest };
-  for (const k of ANCHOR_ONLY_KEYS) {
+  for (const k of hasHref ? BUTTON_ONLY_KEYS : ANCHOR_ONLY_KEYS) {
     delete filtered[k];
   }
-  return filtered as Omit<T, AnchorOnlyKey>;
+  return filtered;
 }
 
-export const AiButtonBase = (props: AiButtonProps) => {
+/**
+ * Flat internal props shape for AiButtonBase. Avoids per-branch ExclusiveUnion casts
+ * when destructuring from the discriminated-union `AiButtonProps`. The discriminant
+ * properties and any props accessed by name are typed; everything else passes through
+ * via the index signature and is cast when handed off to EUI.
+ */
+type AiButtonFlatProps = {
+  variant?: AiButtonVariant;
+  iconOnly?: boolean;
+  iconType?: AiButtonIconType;
+  size?: 'xs' | 's' | 'm';
+  iconSize?: string;
+  children?: React.ReactNode;
+  css?: unknown;
+  href?: string;
+} & Record<string, unknown>;
+
+export const AiButtonBase = (props: AiButtonFlatProps) => {
   const variant: AiButtonVariant = props.variant ?? 'base';
 
   const euiButtonXsSizeCss = useAiButtonXsSizeCss();
@@ -123,13 +101,15 @@ export const AiButtonBase = (props: AiButtonProps) => {
       variant: _variant,
       ...rest
     } = props;
-
-    const iconProps: EuiButtonIconProps = {
+    const iconProps = {
       ...rest,
-      iconType: resolvedIconType(iconType),
-      iconSize: rest.iconSize ?? getSyncedIconSize(rest.size),
+      // iconType is required by the public API when iconOnly is true.
+      iconType: resolvedIconType(iconType!),
+      iconSize: (rest.iconSize ?? getSyncedIconSize(rest.size)) as EuiButtonIconProps['iconSize'],
       css: [buttonCss, iconGradientCss, userCss],
-    };
+    } as EuiButtonIconProps;
+    // Type assertion required: Ref<HTMLElement> is runtime-safe but Ref is invariant.
+    // See file-level comment.
 
     return (
       <>
@@ -149,9 +129,7 @@ export const AiButtonBase = (props: AiButtonProps) => {
       ...rest
     } = props;
 
-    const filtered = rest.href
-      ? filterForButtonOrAnchor(rest, true)
-      : filterForButtonOrAnchor(rest, false);
+    const filtered = filterForButtonOrAnchor(rest, !!rest.href);
     const emptyProps = {
       ...filtered,
       iconSize: rest.iconSize ?? getSyncedIconSize(rest.size),
@@ -159,8 +137,8 @@ export const AiButtonBase = (props: AiButtonProps) => {
       css: [buttonCss, iconGradientCss, userCss],
       children: <span css={labelCss}>{children}</span>,
     } as EuiButtonEmptyProps;
-    // Type assertion required: Ref<HTMLElement> is runtime-safe (EUI passes <button>|<a>, both extend
-    // HTMLElement) but Ref is invariant so TS rejects assignment. See file-level comment.
+    // Type assertion required: Ref<HTMLElement> is runtime-safe but Ref is invariant.
+    // See file-level comment.
 
     return (
       <>
@@ -170,7 +148,6 @@ export const AiButtonBase = (props: AiButtonProps) => {
     );
   }
 
-  type EuiButtonBranchProps = Extract<AiButtonProps, { variant?: 'base' | 'accent' }>;
   const {
     variant: _variant,
     iconOnly: _iconOnly,
@@ -179,12 +156,10 @@ export const AiButtonBase = (props: AiButtonProps) => {
     iconType,
     size,
     ...rest
-  } = props as EuiButtonBranchProps;
+  } = props;
   const buttonSize: 's' | 'm' | undefined = size === 'xs' ? 's' : size;
 
-  const filtered = rest.href
-    ? filterForButtonOrAnchor(rest, true)
-    : filterForButtonOrAnchor(rest, false);
+  const filtered = filterForButtonOrAnchor(rest, !!rest.href);
   const buttonProps = {
     ...filtered,
     size: buttonSize,
@@ -194,8 +169,8 @@ export const AiButtonBase = (props: AiButtonProps) => {
     fill: variant === 'accent',
     children: <span css={labelCss}>{children}</span>,
   } as React.ComponentProps<typeof EuiButton>;
-  // Type assertion required: Ref<HTMLElement> is runtime-safe (EUI passes <button>|<a>, both extend
-  // HTMLElement) but Ref is invariant so TS rejects assignment. See file-level comment.
+  // Type assertion required: Ref<HTMLElement> is runtime-safe but Ref is invariant.
+  // See file-level comment.
 
   return (
     <>
