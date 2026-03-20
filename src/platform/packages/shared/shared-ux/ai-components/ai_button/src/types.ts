@@ -18,14 +18,8 @@ export type AiButtonVariant = 'accent' | 'base' | 'empty' | 'outlined';
 export type AiButtonIconType = 'sparkles' | 'productAgent' | 'aiAssistantLogo';
 type AiButtonTextSize = 'xs' | 's' | 'm';
 
-/** Keys to relax: derived from React types so handlers work for both button and anchor. */
-type RelaxKeys =
-  | Extract<keyof React.DOMAttributes<HTMLButtonElement>, `on${string}`>
-  | 'buttonRef'
-  | Exclude<
-      keyof React.ButtonHTMLAttributes<HTMLButtonElement>,
-      keyof React.AnchorHTMLAttributes<HTMLAnchorElement>
-    >;
+/** Keys to relax: event handlers and ref, so they accept both button and anchor elements. */
+type RelaxKeys = Extract<keyof React.DOMAttributes<HTMLButtonElement>, `on${string}`> | 'buttonRef';
 
 /** Relaxed replacements: handlers and ref that accept both element types. */
 type RelaxedOverrides = Pick<

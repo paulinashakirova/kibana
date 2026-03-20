@@ -7,17 +7,35 @@
  * License v3.0 only", or the "Server Side Public License, v 1".
  */
 
-import { css } from '@emotion/react';
+import { css, type SerializedStyles } from '@emotion/react';
 import { type UseEuiTheme, useEuiTheme, useGeneratedHtmlId } from '@elastic/eui';
 import { useMemo } from 'react';
 import type { AiButtonVariant } from './types';
-import type {
-  AiButtonGradientOptions,
-  AiButtonGradientStyles,
-  AiGradientColors,
-  ResolvedVariantStyles,
-  SvgAiGradient,
-} from './gradient_types';
+
+/** Options for the AI button gradient hooks. */
+export interface AiButtonGradientOptions {
+  readonly variant?: AiButtonVariant;
+  readonly iconOnly?: boolean;
+}
+
+/** Computed gradient styles for an AI button. */
+export interface AiButtonGradientStyles {
+  readonly buttonCss: SerializedStyles;
+  readonly labelCss: SerializedStyles;
+}
+
+/** Start and end colors for a linear gradient. */
+export interface AiGradientColors {
+  readonly startColor: string;
+  readonly endColor: string;
+}
+
+/** SVG gradient for the AI button icon. */
+export interface SvgAiGradient {
+  readonly iconGradientCss?: SerializedStyles;
+  readonly gradientId: string;
+  readonly colors: AiGradientColors;
+}
 
 const DIAGONAL_GRADIENT_START_PERCENT = 2.98;
 const DIAGONAL_GRADIENT_END_PERCENT = 66.24;
@@ -152,7 +170,7 @@ const resolveVariantStyles = (
   variant: AiButtonVariant,
   euiTheme: UseEuiTheme['euiTheme'],
   buttonGradientAngle: number
-): ResolvedVariantStyles => {
+) => {
   const {
     colors,
     components: {
