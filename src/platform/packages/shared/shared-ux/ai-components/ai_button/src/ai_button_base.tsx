@@ -8,8 +8,12 @@
  */
 
 import React from 'react';
-import type { IconType } from '@elastic/eui';
-import type { EuiButtonEmptyProps, EuiButtonIconProps } from '@elastic/eui';
+import type {
+  EuiButtonProps,
+  EuiButtonEmptyProps,
+  EuiButtonIconProps,
+  IconType,
+} from '@elastic/eui';
 import { EuiButton, EuiButtonEmpty, EuiButtonIcon } from '@elastic/eui';
 
 import { useAiButtonGradientStyles, useSvgAiGradient } from './use_ai_gradient_styles';
@@ -19,12 +23,11 @@ import { AiAssistantLogo } from './ai_assistant_logo';
 import type { AiButtonIconType, AiButtonProps, AiButtonVariant } from './types';
 
 /**
- * EUI buttons use `ExclusiveUnion` (anchor vs button props). Callers use element-agnostic
- * handlers/refs (`types.ts` → `RelaxForButtonOrAnchor`). We drop the opposite branch at
- * runtime via `filterForButtonOrAnchor`, then assert to the target EUI props type where TS
- * still rejects (mainly ref invariance: `Ref<HTMLElement>` vs `Ref<HTMLButtonElement>`).
+ * Type assertions on EUI call sites are required: `Ref` is invariant, so
+ * `Ref<HTMLElement>` is not assignable to `Ref<HTMLButtonElement | HTMLAnchorElement>`,
+ * even though both element types extend `HTMLElement` and the ref is safe at runtime.
+ * `filterForButtonOrAnchor` handles EUI's `ExclusiveUnion` (button vs anchor props).
  */
-
 const resolvedIconType = (iconType: AiButtonIconType): IconType =>
   iconType === 'aiAssistantLogo' ? AiAssistantLogo : iconType;
 
@@ -89,7 +92,9 @@ export const AiButtonBase = (props: AiButtonProps) => {
       iconType: resolvedIconType(iconType),
       iconSize: rest.iconSize ?? getSyncedIconSize(rest.size),
       css: [buttonCss, iconGradientCss, userCss],
-    };
+    } as EuiButtonIconProps;
+    // Type assertion required: Ref<HTMLElement> is runtime-safe but Ref is invariant.
+    // See file-level comment.
 
     return (
       <>
@@ -119,7 +124,8 @@ export const AiButtonBase = (props: AiButtonProps) => {
       css: [buttonCss, iconGradientCss, userCss],
       children: <span css={labelCss}>{children}</span>,
     } as EuiButtonEmptyProps;
-
+    // Type assertion required: Ref<HTMLElement> is runtime-safe but Ref is invariant.
+    // See file-level comment.
     return (
       <>
         {svgGradientDefs}
@@ -150,7 +156,9 @@ export const AiButtonBase = (props: AiButtonProps) => {
     css: [buttonCss, iconGradientCss, size === 'xs' && euiButtonXsSizeCss, userCss],
     fill: variant === 'accent',
     children: <span css={labelCss}>{children}</span>,
-  } as React.ComponentProps<typeof EuiButton>;
+  } as EuiButtonProps;
+  // Type assertion required: Ref<HTMLElement> is runtime-safe but Ref is invariant.
+  // See file-level comment.
 
   return (
     <>
