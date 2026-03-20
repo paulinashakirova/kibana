@@ -8,12 +8,7 @@
  */
 
 import React from 'react';
-import type {
-  EuiButtonProps,
-  EuiButtonEmptyProps,
-  EuiButtonIconProps,
-  IconType,
-} from '@elastic/eui';
+import type { IconType } from '@elastic/eui';
 import { EuiButton, EuiButtonEmpty, EuiButtonIcon } from '@elastic/eui';
 
 import { useAiButtonGradientStyles, useSvgAiGradient } from './use_ai_gradient_styles';
@@ -22,12 +17,6 @@ import { SvgAiGradientDefs } from './svg_ai_gradient_defs';
 import { AiAssistantLogo } from './ai_assistant_logo';
 import type { AiButtonIconType, AiButtonProps, AiButtonVariant } from './types';
 
-/**
- * Type assertions on EUI call sites are required: `Ref` is invariant, so
- * `Ref<HTMLElement>` is not assignable to `Ref<HTMLButtonElement | HTMLAnchorElement>`,
- * even though both element types extend `HTMLElement` and the ref is safe at runtime.
- * `filterForButtonOrAnchor` handles EUI's `ExclusiveUnion` (button vs anchor props).
- */
 const resolvedIconType = (iconType: AiButtonIconType): IconType =>
   iconType === 'aiAssistantLogo' ? AiAssistantLogo : iconType;
 
@@ -87,14 +76,13 @@ export const AiButtonBase = (props: AiButtonProps) => {
       ...rest
     } = props;
 
-    const iconProps: EuiButtonIconProps = {
-      ...rest,
+    const filtered = filterForButtonOrAnchor(rest, !!rest.href);
+    const iconProps = {
+      ...filtered,
       iconType: resolvedIconType(iconType),
       iconSize: rest.iconSize ?? getSyncedIconSize(rest.size),
       css: [buttonCss, iconGradientCss, userCss],
-    } as EuiButtonIconProps;
-    // Type assertion required: Ref<HTMLElement> is runtime-safe but Ref is invariant.
-    // See file-level comment.
+    };
 
     return (
       <>
@@ -114,18 +102,14 @@ export const AiButtonBase = (props: AiButtonProps) => {
       ...rest
     } = props;
 
-    const filtered = rest.href
-      ? filterForButtonOrAnchor(rest, true)
-      : filterForButtonOrAnchor(rest, false);
+    const filtered = filterForButtonOrAnchor(rest, !!rest.href);
     const emptyProps = {
       ...filtered,
       iconSize: rest.iconSize ?? getSyncedIconSize(rest.size),
       iconType: iconType ? resolvedIconType(iconType) : undefined,
       css: [buttonCss, iconGradientCss, userCss],
       children: <span css={labelCss}>{children}</span>,
-    } as EuiButtonEmptyProps;
-    // Type assertion required: Ref<HTMLElement> is runtime-safe but Ref is invariant.
-    // See file-level comment.
+    };
     return (
       <>
         {svgGradientDefs}
@@ -145,9 +129,7 @@ export const AiButtonBase = (props: AiButtonProps) => {
   } = props;
   const buttonSize: 's' | 'm' | undefined = size === 'xs' ? 's' : size;
 
-  const filtered = rest.href
-    ? filterForButtonOrAnchor(rest, true)
-    : filterForButtonOrAnchor(rest, false);
+  const filtered = filterForButtonOrAnchor(rest, !!rest.href);
   const buttonProps = {
     ...filtered,
     size: buttonSize,
@@ -156,9 +138,7 @@ export const AiButtonBase = (props: AiButtonProps) => {
     css: [buttonCss, iconGradientCss, size === 'xs' && euiButtonXsSizeCss, userCss],
     fill: variant === 'accent',
     children: <span css={labelCss}>{children}</span>,
-  } as EuiButtonProps;
-  // Type assertion required: Ref<HTMLElement> is runtime-safe but Ref is invariant.
-  // See file-level comment.
+  };
 
   return (
     <>
