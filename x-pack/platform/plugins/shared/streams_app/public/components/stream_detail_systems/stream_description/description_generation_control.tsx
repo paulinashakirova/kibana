@@ -6,9 +6,10 @@
  */
 
 import { useEffect, useState } from 'react';
-import { EuiButton, EuiButtonEmpty, EuiCallOut, EuiFlexGroup, EuiFlexItem } from '@elastic/eui';
+import { EuiButtonEmpty, EuiCallOut, EuiFlexGroup, EuiFlexItem } from '@elastic/eui';
 import React from 'react';
 import { i18n } from '@kbn/i18n';
+import { AiButton } from '@kbn/shared-ux-ai-components';
 import type { DescriptionGenerationTaskResult } from '@kbn/streams-plugin/server/routes/internal/streams/description_generation/route';
 import type { AIFeatures } from '../../../hooks/use_ai_features';
 import { useTaskPolling } from '../../../hooks/use_task_polling';
@@ -108,10 +109,11 @@ export function DescriptionGenerationControl({
     return (
       <EuiFlexGroup gutterSize="xs">
         <EuiFlexItem grow={false}>
-          <EuiButton
-            iconType="sparkle"
+          <AiButton
+            iconType="sparkles"
             iconSide="right"
             isLoading={true}
+            variant="base"
             data-test-subj="generate_description_button"
           >
             {i18n.translate(
@@ -120,7 +122,7 @@ export function DescriptionGenerationControl({
                 defaultMessage: 'Generating description',
               }
             )}
-          </EuiButton>
+          </AiButton>
         </EuiFlexItem>
         <EuiFlexItem grow={false}>
           <EuiButtonEmpty

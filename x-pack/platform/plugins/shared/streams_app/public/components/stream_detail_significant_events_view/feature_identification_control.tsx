@@ -10,6 +10,7 @@ import useAsyncFn from 'react-use/lib/useAsyncFn';
 import { EuiButton, EuiButtonEmpty, EuiCallOut, EuiFlexGroup, EuiFlexItem } from '@elastic/eui';
 import { useBoolean } from '@kbn/react-hooks';
 import { i18n } from '@kbn/i18n';
+import { AiButton } from '@kbn/shared-ux-ai-components';
 import { TaskStatus, type Streams } from '@kbn/streams-schema';
 import type { AIFeatures } from '../../hooks/use_ai_features';
 import { useStreamFeaturesApi } from '../../hooks/use_stream_features_api';
@@ -183,14 +184,15 @@ interface TriggerButtonProps {
 
 function TriggerButton({ isLoading, onClick, aiFeatures }: TriggerButtonProps) {
   return (
-    <EuiButton
+    <AiButton
       {...COMMON_BUTTON_PROPS}
+      variant="base"
       isLoading={isLoading}
       onClick={onClick}
       isDisabled={!aiFeatures?.enabled}
     >
       {IDENTIFY_FEATURES_BUTTON_LABEL}
-    </EuiButton>
+    </AiButton>
   );
 }
 
@@ -247,14 +249,15 @@ function InProgressState({ onCancel }: InProgressStateProps) {
   return (
     <EuiFlexGroup>
       <EuiFlexItem>
-        <EuiButton
-          iconType="sparkle"
+        <AiButton
+          iconType="sparkles"
           iconSide="left"
           isLoading
+          variant="base"
           data-test-subj="feature_identification_identify_features_button"
         >
           {IN_PROGRESS_BUTTON_LABEL}
-        </EuiButton>
+        </AiButton>
       </EuiFlexItem>
       <EuiFlexItem>
         <EuiButtonEmpty
