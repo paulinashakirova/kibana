@@ -43,10 +43,75 @@ export class MonacoEditorService extends FtrService {
     return values[nthIndex] as string;
   }
 
-  public async typeCodeEditorValue(value: string, testSubjId: string) {
-    const editor = await this.testSubjects.find(testSubjId);
-    const textarea = await editor.findByCssSelector('textarea');
-    await textarea.type(value);
+  /**
+   * Focus the editor using Monaco's API.
+   */
+  public async focusCodeEditor(testSubjId: string) {
+    await this.browser.execute((id: string) => {
+      const container = document.querySelector(`[data-test-subj="${id}"]`);
+      const editor = window.MonacoEnvironment?.monaco?.editor
+        ?.getEditors()
+        ?.find((e: any) => container?.contains(e.getDomNode()));
+      if (editor) {
+        editor.focus();
+      }
+    }, testSubjId);
+  }
+
+  /**
+   * Set editor value by test subject ID.
+   * @param triggerSuggest - Whether to trigger autocomplete suggestions (default: true)
+   */
+  public async typeCodeEditorValue(value: string, testSubjId: string, triggerSuggest = true) {
+    await this.waitCodeEditorReady(testSubjId);
+    await this.browser.execute(
+      (id: string, text: string, suggest: boolean) => {
+        const container = document.querySelector(`[data-test-subj="${id}"]`);
+        const editor = window
+          .MonacoEnvironment!.monaco.editor.getEditors()
+          .find((e: any) => container?.contains(e.getDomNode()));
+        if (!editor) return;
+        editor.focus();
+        editor.getModel()?.setValue(text);
+        const model = editor.getModel();
+        if (model) {
+          const lastLine = model.getLineCount();
+          editor.setPosition({
+            lineNumber: lastLine,
+            column: model.getLineMaxColumn(lastLine),
+          });
+        }
+        if (suggest) {
+          editor.trigger('keyboard', 'editor.action.triggerSuggest', {});
+        }
+      },
+      testSubjId,
+      value,
+      triggerSuggest
+    );
+  }
+
+  /**
+   * Append text to an existing editor value (atomic operation, no interleaving).
+   */
+  public async appendToCodeEditor(testSubjId: string, text: string) {
+    await this.browser.execute(
+      (id: string, textToAppend: string) => {
+        const container = document.querySelector(`[data-test-subj="${id}"]`);
+        const editor = window.MonacoEnvironment?.monaco?.editor
+          ?.getEditors()
+          ?.find((e: any) => container?.contains(e.getDomNode()));
+        const model = editor?.getModel();
+        if (!editor || !model) return;
+
+        model.setValue(model.getValue() + textToAppend);
+        const lastLine = model.getLineCount();
+        editor.setPosition({ lineNumber: lastLine, column: model.getLineMaxColumn(lastLine) });
+        editor.focus();
+      },
+      testSubjId,
+      text
+    );
   }
 
   public async setCodeEditorValue(value: string, nthIndex?: number) {
@@ -81,18 +146,152 @@ export class MonacoEditorService extends FtrService {
     );
   }
 
-  public getCodeEditorSuggestWidget() {
-    return this.findService.byCssSelector(
-      '[data-test-subj="kbnCodeEditorEditorOverflowWidgetsContainer"] .suggest-widget'
+  public async clearCodeEditorValue(testSubjId: string) {
+    await this.browser.execute((id: string) => {
+      const container = document.querySelector(`[data-test-subj="${id}"]`);
+      const editor = window
+        .MonacoEnvironment!.monaco.editor.getEditors()
+        .find((e: any) => container?.contains(e.getDomNode()));
+      editor?.getModel()?.setValue('');
+      editor?.focus();
+    }, testSubjId);
+  }
+
+  public async getCodeEditorValueByTestSubj(testSubjId: string): Promise<string> {
+    return await this.browser.execute((id: string) => {
+      const container = document.querySelector(`[data-test-subj="${id}"]`);
+      const editor = window
+        .MonacoEnvironment!.monaco.editor.getEditors()
+        .find((e: any) => container?.contains(e.getDomNode()));
+      return editor?.getModel()?.getValue() ?? '';
+    }, testSubjId);
+  }
+
+  public async selectAllCodeEditorValue(testSubjId: string) {
+    await this.browser.execute((id: string) => {
+      const container = document.querySelector(`[data-test-subj="${id}"]`);
+      const editor = window
+        .MonacoEnvironment!.monaco.editor.getEditors()
+        .find((e: any) => container?.contains(e.getDomNode()));
+      const model = editor?.getModel();
+      if (editor && model) {
+        const lastLine = model.getLineCount();
+        const lastColumn = model.getLineMaxColumn(lastLine);
+        editor.focus();
+        editor.setSelection({
+          startLineNumber: 1,
+          startColumn: 1,
+          endLineNumber: lastLine,
+          endColumn: lastColumn,
+        });
+      }
+    }, testSubjId);
+  }
+
+  // --- Methods that accept CSS selectors (for editors without data-test-subj) ---
+
+  public async waitCodeEditorReadyByCssSelector(cssSelector: string): Promise<void> {
+    await this.retry.waitFor('editor ready', async () => {
+      const isReady = await this.browser.execute((selector: string) => {
+        const container = document.querySelector(selector);
+        const editor = window.MonacoEnvironment?.monaco?.editor
+          ?.getEditors()
+          ?.find((e: any) => container?.contains(e.getDomNode()));
+        return !!editor;
+      }, cssSelector);
+      return isReady;
+    });
+  }
+
+  public async focusCodeEditorByCssSelector(cssSelector: string) {
+    await this.browser.execute((selector: string) => {
+      const container = document.querySelector(selector);
+      const editor = window.MonacoEnvironment?.monaco?.editor
+        ?.getEditors()
+        ?.find((e: any) => container?.contains(e.getDomNode()));
+      if (editor) {
+        editor.focus();
+      }
+    }, cssSelector);
+  }
+
+  public async typeCodeEditorValueByCssSelector(
+    cssSelector: string,
+    value: string,
+    triggerSuggest = true
+  ) {
+    await this.waitCodeEditorReadyByCssSelector(cssSelector);
+    await this.browser.execute(
+      (selector: string, text: string, suggest: boolean) => {
+        const container = document.querySelector(selector);
+        const editor = window
+          .MonacoEnvironment!.monaco.editor.getEditors()
+          .find((e: any) => container?.contains(e.getDomNode()));
+
+        if (!editor) return;
+
+        editor.focus();
+        const pos = editor.getPosition() || { lineNumber: 1, column: 1 };
+        editor.executeEdits('test', [
+          {
+            range: {
+              startLineNumber: pos.lineNumber,
+              startColumn: pos.column,
+              endLineNumber: pos.lineNumber,
+              endColumn: pos.column,
+            },
+            text,
+          },
+        ]);
+        if (suggest) {
+          editor.trigger('keyboard', 'editor.action.triggerSuggest', {});
+        }
+      },
+      cssSelector,
+      value,
+      triggerSuggest
     );
+    await this.focusCodeEditorByCssSelector(cssSelector);
+  }
+
+  public async setCodeEditorValueByCssSelector(cssSelector: string, value: string) {
+    await this.waitCodeEditorReadyByCssSelector(cssSelector);
+    await this.browser.execute(
+      (selector: string, text: string) => {
+        const container = document.querySelector(selector);
+        const editor = window
+          .MonacoEnvironment!.monaco.editor.getEditors()
+          .find((e: any) => container?.contains(e.getDomNode()));
+        if (editor) {
+          editor.getModel()?.setValue(text);
+          editor.focus();
+        }
+      },
+      cssSelector,
+      value
+    );
+  }
+
+  public async clearCodeEditorValueByCssSelector(cssSelector: string) {
+    await this.setCodeEditorValueByCssSelector(cssSelector, '');
+  }
+
+  public async getCodeEditorValueByCssSelector(cssSelector: string): Promise<string> {
+    return await this.browser.execute((selector: string) => {
+      const container = document.querySelector(selector);
+      const editor = window
+        .MonacoEnvironment!.monaco.editor.getEditors()
+        .find((e: any) => container?.contains(e.getDomNode()));
+      return editor?.getModel()?.getValue() ?? '';
+    }, cssSelector);
   }
 
   public async setScrollTop(scrollTop: number, nthIndex: number = 0) {
     await this.browser.execute(
-      (editorIndex, scrollAmount) => {
-        const editors = window.MonacoEnvironment?.monaco?.editor?.getEditors();
-        if (editors && editors[editorIndex]) {
-          editors[editorIndex].setScrollTop(scrollAmount);
+      (index: number, scroll: number) => {
+        const editors = window.MonacoEnvironment!.monaco.editor.getEditors();
+        if (editors[index]) {
+          editors[index].setScrollTop(scroll);
         }
       },
       nthIndex,
@@ -101,9 +300,42 @@ export class MonacoEditorService extends FtrService {
   }
 
   public async getScrollTop(nthIndex: number = 0): Promise<number> {
-    return await this.browser.execute((editorIndex) => {
-      const editors = window.MonacoEnvironment?.monaco?.editor?.getEditors();
-      return editors?.[editorIndex]?.getScrollTop() ?? 0;
+    return await this.browser.execute((index: number) => {
+      const editors = window.MonacoEnvironment!.monaco.editor.getEditors();
+      return editors[index]?.getScrollTop() ?? 0;
     }, nthIndex);
+  }
+
+  /**
+   * Type one character at a time via Monaco's keyboard handler (needed for autocomplete in tests).
+   */
+  public async simulateTyping(testSubjId: string, text: string) {
+    await this.waitCodeEditorReady(testSubjId);
+    await this.browser.execute(
+      (id: string, textToType: string) => {
+        const container = document.querySelector(`[data-test-subj="${id}"]`);
+        const editor = window.MonacoEnvironment?.monaco?.editor
+          ?.getEditors()
+          ?.find((e: any) => container?.contains(e.getDomNode()));
+        if (!editor) return;
+        editor.focus();
+        for (let i = 0; i < textToType.length; i++) {
+          editor.trigger('keyboard', 'type', { text: textToType[i] });
+        }
+      },
+      testSubjId,
+      text
+    );
+  }
+
+  public async simulateKeyPress(testSubjId: string, key: string) {
+    const textarea = await this.waitCodeEditorReady(testSubjId);
+    await textarea.pressKeys(key);
+  }
+
+  public async getCodeEditorSuggestWidget(): Promise<WebElementWrapper> {
+    return this.findService.byCssSelector(
+      '[data-test-subj="kbnCodeEditorEditorOverflowWidgetsContainer"] .suggest-widget'
+    );
   }
 }

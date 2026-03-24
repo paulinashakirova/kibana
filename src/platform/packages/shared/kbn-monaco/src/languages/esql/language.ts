@@ -160,6 +160,7 @@ export const ESQLLang: CustomLangModuleType<ESQLDependencies, MonacoMessage> = {
         return await inlineSuggest(fullText, textBeforeCursor, range, callbacks);
       },
       freeInlineCompletions: () => {},
+      disposeInlineCompletions: () => {},
     };
 
     return provider;

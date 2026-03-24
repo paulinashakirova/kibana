@@ -18,6 +18,7 @@ export class ConsolePageObject extends FtrService {
   private readonly find = this.ctx.getService('find');
   private readonly common = this.ctx.getPageObject('common');
   private readonly browser = this.ctx.getService('browser');
+  private readonly monacoEditor = this.ctx.getService('monacoEditor');
 
   public async getTextArea() {
     const codeEditor = await this.testSubjects.find('consoleMonacoEditor');
@@ -37,9 +38,7 @@ export class ConsolePageObject extends FtrService {
   }
 
   public async clearEditorText() {
-    const textArea = await this.getTextArea();
-    await textArea.clickMouseButton();
-    await textArea.clearValueWithKeyboard();
+    await this.monacoEditor.clearCodeEditorValue('consoleMonacoEditor');
   }
 
   public async focusInputEditor() {
@@ -71,9 +70,7 @@ export class ConsolePageObject extends FtrService {
   }
 
   public async getOutputText() {
-    const outputPanel = await this.testSubjects.find('consoleMonacoOutput');
-    const outputViewDiv = await outputPanel.findByClassName('monaco-scrollable-element');
-    return await outputViewDiv.getVisibleText();
+    return await this.monacoEditor.getCodeEditorValueByTestSubj('consoleMonacoOutput');
   }
 
   public async pressEnter() {
@@ -82,8 +79,11 @@ export class ConsolePageObject extends FtrService {
   }
 
   public async enterText(text: string) {
-    const textArea = await this.getTextArea();
-    await textArea.type(text);
+    await this.monacoEditor.typeCodeEditorValue(text, 'consoleMonacoEditor', false);
+  }
+
+  public async appendText(text: string) {
+    await this.monacoEditor.appendToCodeEditor('consoleMonacoEditor', text);
   }
 
   public async promptAutocomplete(letter = 'b') {
@@ -199,9 +199,7 @@ export class ConsolePageObject extends FtrService {
   }
 
   public async selectAllRequests() {
-    const textArea = await this.getTextArea();
-    const selectionKey = Key[process.platform === 'darwin' ? 'COMMAND' : 'CONTROL'];
-    await textArea.pressKeys([selectionKey, 'a']);
+    await this.monacoEditor.selectAllCodeEditorValue('consoleMonacoEditor');
   }
 
   public async getEditor() {
@@ -234,9 +232,11 @@ export class ConsolePageObject extends FtrService {
   }
 
   public async copyRequestsToClipboard() {
-    const textArea = await this.getTextArea();
-    await textArea.pressKeys([Key[process.platform === 'darwin' ? 'COMMAND' : 'CONTROL'], 'a']);
-    await textArea.pressKeys([Key[process.platform === 'darwin' ? 'COMMAND' : 'CONTROL'], 'c']);
+    // Get content via Monaco API and write to clipboard
+    const content = await this.monacoEditor.getCodeEditorValueByTestSubj('consoleMonacoEditor');
+    await this.browser.execute((text: string) => {
+      navigator.clipboard.writeText(text);
+    }, content);
   }
 
   public async isA11yOverlayVisible() {
@@ -481,12 +481,8 @@ export class ConsolePageObject extends FtrService {
     return await this.testSubjects.exists('consoleMenuAutoIndent');
   }
 
-  public async isCopyToLanguageButtonVisible() {
+  public async isCopyAsButtonVisible() {
     return await this.testSubjects.exists('consoleMenuCopyAsButton');
-  }
-
-  public async isSelectLanguageButtonVisible() {
-    return await this.testSubjects.exists('consoleMenuSelectLanguage');
   }
 
   public async clickCopyAsCurlButton() {
@@ -495,41 +491,30 @@ export class ConsolePageObject extends FtrService {
   }
 
   public async changeLanguageAndCopy(language: string) {
-    // Click "Select language" menu item to open language selector modal
-    await this.testSubjects.click('consoleMenuSelectLanguage');
+    const openModalButton = await this.testSubjects.find('changeLanguageButton');
+    await openModalButton.click();
 
-    // Wait for the modal to open
-    await this.retry.waitFor('language selector modal to open', async () => {
-      return await this.testSubjects.exists(`languageOption-${language}`);
-    });
+    const changeLangButton = await this.testSubjects.find(`languageOption-${language}`);
+    await changeLangButton.click();
 
-    // Select the language option
-    await this.testSubjects.click(`languageOption-${language}`);
-
-    // Click "Copy code" button to copy with the selected language
-    await this.testSubjects.click('copyAsLanguageSubmit');
+    const submitButton = await this.testSubjects.find('copyAsLanguageSubmit');
+    await submitButton.click();
   }
 
   public async changeDefaultLanguage(language: string) {
-    // Click "Select language" menu item to open language selector modal
-    await this.testSubjects.click('consoleMenuSelectLanguage');
+    const openModalButton = await this.testSubjects.find('changeLanguageButton');
+    await openModalButton.click();
 
-    // Wait for the modal to open
-    await this.retry.waitFor('language selector modal to open', async () => {
-      return await this.testSubjects.exists(`languageOption-${language}`);
-    });
+    const changeDefaultLangButton = await this.testSubjects.find(
+      `changeDefaultLanguageTo-${language}`
+    );
+    await changeDefaultLangButton.click();
 
-    // Select the language option
-    await this.testSubjects.click(`languageOption-${language}`);
-
-    // Click "Set as default" button (moves the badge)
-    await this.testSubjects.click('setAsDefaultLanguage');
-
-    // Click "Cancel" to close modal and save the default
-    await this.testSubjects.click('closeCopyAsModal');
+    const submitButton = await this.testSubjects.find('copyAsLanguageSubmit');
+    await submitButton.click();
   }
 
-  public async clickCopyToLanguageButton() {
+  public async clickCopyAsButton() {
     const button = await this.testSubjects.find('consoleMenuCopyAsButton');
     await button.click();
   }

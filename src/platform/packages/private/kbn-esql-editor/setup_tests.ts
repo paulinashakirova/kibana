@@ -9,3 +9,32 @@
 
 // eslint-disable-next-line import/no-extraneous-dependencies
 import '@testing-library/jest-dom';
+
+// Mock navigator.clipboard for Monaco Editor 0.45.0+
+// Monaco's Safari workaround cancels internal DeferredPromises, causing unhandled rejections in tests
+Object.defineProperty(navigator, 'clipboard', {
+  value: {
+    writeText: jest.fn().mockResolvedValue(undefined),
+    readText: jest.fn().mockResolvedValue(''),
+    write: jest.fn((items?: ClipboardItem[]) => {
+      // Handle cancelled promises to prevent unhandled rejections
+      items?.forEach((item: any) => {
+        if (item?.data) {
+          Object.values(item.data).forEach((value: any) => {
+            if (value?.catch) {
+              value.catch((error: any) => {
+                // Only suppress expected cancellations; let real errors fail tests
+                if (error?.message !== 'Canceled' && error?.name !== 'Canceled') {
+                  throw error;
+                }
+              });
+            }
+          });
+        }
+      });
+      return Promise.resolve();
+    }),
+    read: jest.fn().mockResolvedValue([]),
+  },
+  configurable: true,
+});
