@@ -76,8 +76,8 @@ export function ChatActionsMenu({
     if (!connectors.connectors) return [[], []];
 
     return connectors.connectors.reduce<ConnectorLists>(
-      ([pre, custom], { id, name, isPreconfigured }) => {
-        const item = { value: id, label: name };
+      ([pre, custom], { connectorId, name, isPreconfigured }) => {
+        const item = { value: connectorId, label: name };
         return isPreconfigured ? [[...pre, item], custom] : [pre, [...custom, item]];
       },
       [[], []]
@@ -127,7 +127,11 @@ export function ChatActionsMenu({
             defaultMessage: 'Connector',
           })}{' '}
           <strong>
-            {connectors.connectors?.find(({ id }) => id === connectors.selectedConnector)?.name}
+            {
+              connectors.connectors?.find(
+                ({ connectorId }) => connectorId === connectors.selectedConnector
+              )?.name
+            }
           </strong>
         </div>
       ),
