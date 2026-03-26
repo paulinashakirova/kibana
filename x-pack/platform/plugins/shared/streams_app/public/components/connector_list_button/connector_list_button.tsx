@@ -4,9 +4,8 @@
  * 2.0; you may not use this file except in compliance with the Elastic License
  * 2.0.
  */
-import type { EuiButtonProps } from '@elastic/eui';
+import type { EuiLoadingSpinnerProps } from '@elastic/eui';
 import {
-  EuiButton,
   EuiButtonIcon,
   EuiContextMenuItem,
   EuiContextMenuPanel,
@@ -19,6 +18,7 @@ import {
 import { i18n } from '@kbn/i18n';
 import { useBoolean } from '@kbn/react-hooks';
 import React from 'react';
+import { AiButton, type AiButtonProps } from '@kbn/shared-ux-ai-components';
 import type { AIFeatures } from '../../hooks/use_ai_features';
 import { useAIFeatures } from '../../hooks/use_ai_features';
 import { EnableAIFeaturesLink } from '../enable_ai_features_link/enable_ai_features_link';
@@ -35,7 +35,10 @@ export function ConnectorListButtonBase({
   buttonProps,
   aiFeatures,
 }: {
-  buttonProps: EuiButtonProps & { onClick?: () => void };
+  buttonProps: AiButtonProps & {
+    fill?: boolean;
+    size?: EuiLoadingSpinnerProps['size'];
+  };
   aiFeatures: Pick<AIFeatures, 'couldBeEnabled' | 'enabled' | 'genAiConnectors'> | null;
 }) {
   const [isPopoverOpen, { off: closePopover, toggle: togglePopover }] = useBoolean(false);
@@ -62,13 +65,16 @@ export function ConnectorListButtonBase({
   return (
     <EuiFlexGroup responsive={false} gutterSize="xs" alignItems="center">
       <EuiFlexItem grow={false}>
-        <EuiButton
+        <AiButton
           isDisabled={!connectorsResult?.connectors?.length}
           isLoading={connectorsResult?.loading}
           size={buttonSize}
-          fill={fill}
+          variant={fill ? 'accent' : 'base'}
+          iconType="sparkles"
           {...buttonProps}
-        />
+        >
+          {buttonProps.children}
+        </AiButton>
       </EuiFlexItem>
       {connectorsResult?.connectors && connectorsResult.connectors.length >= 2 && (
         <EuiFlexItem grow={false}>
@@ -120,7 +126,10 @@ export function ConnectorListButtonBase({
 export function ConnectorListButton({
   buttonProps,
 }: {
-  buttonProps: EuiButtonProps & { onClick?: () => void };
+  buttonProps: AiButtonProps & {
+    fill?: boolean;
+    size?: EuiLoadingSpinnerProps['size'];
+  };
 }) {
   const aiFeatures = useAIFeatures();
 
