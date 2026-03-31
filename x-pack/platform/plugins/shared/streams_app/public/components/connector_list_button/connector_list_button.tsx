@@ -16,6 +16,7 @@ import {
   EuiPopover,
   useGeneratedHtmlId,
 } from '@elastic/eui';
+import { AiButton } from '@kbn/shared-ux-ai-components';
 import { i18n } from '@kbn/i18n';
 import { useBoolean } from '@kbn/react-hooks';
 import React from 'react';
@@ -59,17 +60,44 @@ export function ConnectorListButtonBase({
 
   const connectorsResult = aiFeatures.genAiConnectors;
 
+  let primaryButton: React.ReactElement;
+  if (
+    buttonProps.iconType === 'sparkles' ||
+    buttonProps.iconType === 'aiAssistantLogo' ||
+    buttonProps.iconType === 'productAgent'
+  ) {
+    const {
+      iconType: _unusedIconType,
+      fill: sparklesFill,
+      css: _unusedSparklesCss,
+      ...rest
+    } = buttonProps;
+    primaryButton = (
+      <AiButton
+        isDisabled={!connectorsResult?.connectors?.length}
+        isLoading={connectorsResult?.loading}
+        size={buttonSize}
+        variant={sparklesFill ?? false ? 'accent' : 'base'}
+        iconType="sparkles"
+        {...rest}
+      />
+    );
+  } else {
+    const { css: _unusedEuiButtonCss, ...rest } = buttonProps;
+    primaryButton = (
+      <EuiButton
+        isDisabled={!connectorsResult?.connectors?.length}
+        isLoading={connectorsResult?.loading}
+        size={buttonSize}
+        fill={fill}
+        {...rest}
+      />
+    );
+  }
+
   return (
     <EuiFlexGroup responsive={false} gutterSize="xs" alignItems="center">
-      <EuiFlexItem grow={false}>
-        <EuiButton
-          isDisabled={!connectorsResult?.connectors?.length}
-          isLoading={connectorsResult?.loading}
-          size={buttonSize}
-          fill={fill}
-          {...buttonProps}
-        />
-      </EuiFlexItem>
+      <EuiFlexItem grow={false}>{primaryButton}</EuiFlexItem>
       {connectorsResult?.connectors && connectorsResult.connectors.length >= 2 && (
         <EuiFlexItem grow={false}>
           <EuiPopover
@@ -82,7 +110,7 @@ export function ConnectorListButtonBase({
                 onClick={togglePopover}
                 display="base"
                 size={buttonSize}
-                iconType="controls"
+                iconType="controlsHorizontal"
                 aria-label={SHOW_MORE_ARIA_LABEL}
               />
             }
