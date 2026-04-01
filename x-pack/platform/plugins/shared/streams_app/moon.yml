@@ -107,7 +107,13 @@ dependsOn:
   - '@kbn/inference-endpoint-ui-common'
   - '@kbn/stack-connectors-plugin'
   - '@kbn/std'
+<<<<<<< o11y-ai-button
   - '@kbn/shared-ux-ai-components'
+=======
+  - '@kbn/inference-connectors'
+  - '@kbn/streams-ai'
+  - '@kbn/cps'
+>>>>>>> main
 tags:
   - plugin
   - prod
