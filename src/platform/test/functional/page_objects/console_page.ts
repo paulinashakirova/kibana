@@ -234,9 +234,22 @@ export class ConsolePageObject extends FtrService {
   public async copyRequestsToClipboard() {
     // Get content via Monaco API and write to clipboard
     const content = await this.monacoEditor.getCodeEditorValueByTestSubj('consoleMonacoEditor');
-    await this.browser.execute((text: string) => {
-      navigator.clipboard.writeText(text);
-    }, content);
+    const clipboardError = await this.browser.executeAsync(
+      (text: string, done: (errorMessage: string | null) => void) => {
+        navigator.clipboard
+          .writeText(text)
+          .then(() => done(null))
+          .catch((error) => {
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            done(errorMessage);
+          });
+      },
+      content
+    );
+
+    if (clipboardError) {
+      throw new Error(`Failed to copy requests to clipboard: ${clipboardError}`);
+    }
   }
 
   public async isA11yOverlayVisible() {
@@ -510,8 +523,8 @@ export class ConsolePageObject extends FtrService {
     );
     await changeDefaultLangButton.click();
 
-    const submitButton = await this.testSubjects.find('copyAsLanguageSubmit');
-    await submitButton.click();
+    const closeModalButton = await this.testSubjects.find('closeCopyAsModal');
+    await closeModalButton.click();
   }
 
   public async clickCopyAsButton() {

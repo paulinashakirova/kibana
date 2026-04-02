@@ -57,10 +57,17 @@ export function ActionsJsmServiceProvider(
 
       await browser.execute((text: string) => {
         const editor = window.MonacoEnvironment?.monaco.editor.getEditors()[0];
-        if (editor) {
-          editor.getModel()?.setValue(text);
-          editor.focus();
+        if (!editor) {
+          throw new Error('Monaco editor not found while setting JSON editor value');
         }
+
+        const model = editor.getModel();
+        if (!model) {
+          throw new Error('Monaco editor model not found while setting JSON editor value');
+        }
+
+        model.setValue(text);
+        editor.focus();
       }, stringified);
     },
   };

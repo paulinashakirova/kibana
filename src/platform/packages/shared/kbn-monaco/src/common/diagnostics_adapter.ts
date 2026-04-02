@@ -118,12 +118,14 @@ export class DiagnosticsAdapter {
 
     if (errorMarkers) {
       const model = monaco.editor.getModel(resource);
-      this.errors = {
-        ...this.errors,
-        [model!.id]: errorMarkers,
-      };
-      // Set the error markers and underline them with "Error" severity
-      monaco.editor.setModelMarkers(model!, this.langId, errorMarkers.map(toDiagnostics));
+      if (model !== null) {
+        this.errors = {
+          ...this.errors,
+          [model.id]: errorMarkers,
+        };
+        // Set the error markers and underline them with "Error" severity
+        monaco.editor.setModelMarkers(model, this.langId, errorMarkers.map(toDiagnostics));
+      }
     }
 
     const isValid = errorMarkers === undefined || errorMarkers.length === 0;
