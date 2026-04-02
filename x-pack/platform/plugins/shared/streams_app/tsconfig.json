@@ -109,7 +109,6 @@
     "@kbn/stack-connectors-plugin",
     "@kbn/std",
     "@kbn/shared-ux-ai-components",
-    "@kbn/inference-connectors",
     "@kbn/streams-ai",
     "@kbn/cps",
     "@kbn/deeplinks-management",
