@@ -111,6 +111,7 @@ dependsOn:
   - '@kbn/inference-connectors'
   - '@kbn/streams-ai'
   - '@kbn/cps'
+  - '@kbn/deeplinks-management'
 tags:
   - plugin
   - prod
