@@ -175,16 +175,8 @@ export default function ({ getService, getPageObjects }: FtrProviderContext) {
       await lens.configureDimension({
         dimension: 'lnsXY_yDimensionPanel > lns-empty-dimension',
         operation: 'formula',
-        keepOpen: true,
+        formula: `average(memory, kql='bytes > 2000')`,
       });
-
-      // Type formula char-by-char so Monaco's keyboard handlers fire:
-      // `(` auto-inserts `)`, and `kql=` auto-inserts '' (cursor between quotes).
-      // Then ArrowRight exits the auto-inserted closing quote.
-      await lens.simulateTypingInFormula(`average(memory, kql=bytes > 2000`);
-      await lens.simulateKeyInFormula('ArrowRight');
-
-      await lens.closeDimensionEditor();
 
       await lens.waitForVisualization('xyVisChart');
       // expect the button is shown and enabled
