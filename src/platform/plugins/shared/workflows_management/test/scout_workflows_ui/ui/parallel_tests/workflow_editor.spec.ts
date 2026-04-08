@@ -81,8 +81,10 @@ test.describe(
       await expect(validationAccordion).toBeVisible();
       await expect(validationAccordion).toContainText('error');
 
-      // Click to expand the accordion and verify the specific error message
-      await validationAccordion.getByRole('button', { name: 'error' }).click();
+      // Click to expand the accordion and verify the specific error message.
+      const errorButton = validationAccordion.getByRole('button', { name: 'error' });
+      await expect(errorButton).toBeEnabled();
+      await errorButton.click();
       await expect(validationAccordion.getByText('missing property "steps"')).toBeVisible();
 
       // Fix the workflow by pasting valid YAML
@@ -111,7 +113,7 @@ test.describe(
       const suggestWidget = pageObjects.workflowEditor.getYamlEditorSuggestWidget();
       await expect(suggestWidget).toBeVisible();
 
-      await page.keyboard.type('ela');
+      await pageObjects.workflowEditor.typeInYamlEditor('ela');
 
       // Verify step types are shown in suggestions (alphabetically sorted, starting with 'a')
       await expect(
@@ -124,12 +126,12 @@ test.describe(
 
       await suggestWidget.getByRole('option', { name: 'elasticsearch.search' }).click();
       await page.keyboard.press('Enter');
-      await page.keyboard.type('with:');
+      await pageObjects.workflowEditor.typeInYamlEditor('with:');
       await page.keyboard.press('Enter');
       await page.keyboard.press('Space');
 
       await expect(suggestWidget).toBeVisible();
-      await page.keyboard.type('ind');
+      await pageObjects.workflowEditor.typeInYamlEditor('ind');
 
       await expect(suggestWidget.getByRole('option', { name: 'index' })).toBeVisible();
     });

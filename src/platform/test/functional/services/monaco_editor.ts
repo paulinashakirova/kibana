@@ -19,12 +19,16 @@ export class MonacoEditorService extends FtrService {
 
   public async waitCodeEditorReady(containerTestSubjId: string): Promise<WebElementWrapper> {
     const editorContainer = await this.testSubjects.find(containerTestSubjId);
-    const editor = await editorContainer.findByCssSelector('textarea');
-    // Wait for the editor to be enabled
     await this.retry.waitFor('editor enabled', async () => {
-      return (await editor.isDisplayed()) && (await editor.isEnabled());
+      return await this.browser.execute((id: string) => {
+        const container = document.querySelector(`[data-test-subj="${id}"]`);
+        const editor = window.MonacoEnvironment?.monaco?.editor
+          ?.getEditors()
+          ?.find((e: any) => container?.contains(e.getDomNode()));
+        return !!editor;
+      }, containerTestSubjId);
     });
-    return editor;
+    return editorContainer.findByCssSelector('textarea');
   }
 
   public async getCodeEditorValue(nthIndex: number = 0) {

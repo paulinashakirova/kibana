@@ -263,6 +263,21 @@ export class WorkflowEditorPage {
     );
   }
 
+  async typeInYamlEditor(text: string): Promise<void> {
+    await this.page.evaluate((textToType: string) => {
+      const container = document.querySelector('[data-test-subj="workflowYamlEditor"]');
+      const editor = window.MonacoEnvironment?.monaco?.editor
+        ?.getEditors()
+        ?.find((e) => container?.contains(e.getDomNode()));
+      if (editor) {
+        editor.focus();
+        for (let i = 0; i < textToType.length; i++) {
+          editor.trigger('keyboard', 'type', { text: textToType[i] });
+        }
+      }
+    }, text);
+  }
+
   /**
    * Save the workflow
    */

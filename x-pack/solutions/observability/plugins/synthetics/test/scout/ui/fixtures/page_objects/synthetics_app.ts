@@ -214,7 +214,17 @@ export class SyntheticsAppPage {
     await this.createBasicMonitorDetails({ name, apmServiceName, locations });
     if (inlineScript) {
       await this.page.testSubj.click('syntheticsSourceTab__inline');
-      await this.page.fill('[data-test-subj=codeEditorContainer] textarea', inlineScript);
+      await this.page.evaluate((text: string) => {
+        const container = document.querySelector('[data-test-subj="codeEditorContainer"]');
+        const monaco = (window as any).MonacoEnvironment?.monaco;
+        const editor = monaco?.editor
+          ?.getEditors()
+          ?.find((e: any) => container?.contains(e.getDomNode()));
+        if (editor) {
+          editor.focus();
+          editor.getModel()?.setValue(text);
+        }
+      }, inlineScript);
       return;
     }
     if (recorderScript) {

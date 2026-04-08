@@ -420,7 +420,12 @@
     },
     {
       "groupName": "monaco",
-      "matchDepNames": ["monaco-yaml", "monaco-editor", "monaco-promql"],
+      "matchDepNames": [
+        "monaco-yaml",
+        "monaco-editor",
+        "monaco-promql",
+        "monaco-marker-data-provider"
+      ],
       "reviewers": ["team:appex-sharedux"],
       "matchBaseBranches": ["main"],
       "labels": ["Team:SharedUX", "release_note:skip", "backport:all-open"],

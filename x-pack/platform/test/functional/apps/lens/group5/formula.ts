@@ -49,8 +49,7 @@ export default function ({ getService, getPageObjects }: FtrProviderContext) {
         keepOpen: true,
       });
 
-      // Type the formula character-by-character to trigger auto-quoting
-      await lens.simulateTypingInFormula('count(kql=*');
+      await lens.typeFormula("count(kql='*')");
 
       await retry.try(async () => {
         expect(await lens.getDatatableCellText(0, 0)).to.eql('14,005');
