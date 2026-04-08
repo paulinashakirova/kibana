@@ -337,6 +337,32 @@ export class MonacoEditorService extends FtrService {
     await textarea.pressKeys(key);
   }
 
+  /**
+   * Trigger a Monaco editor command by key name (e.g. 'ArrowLeft', 'ArrowRight').
+   */
+  public async simulateKeyCommand(testSubjId: string, key: string) {
+    const keyToCommandId: Record<string, string> = {
+      ArrowLeft: 'cursorLeft',
+      ArrowRight: 'cursorRight',
+      ArrowUp: 'cursorUp',
+      ArrowDown: 'cursorDown',
+    };
+    await this.browser.execute(
+      (id: string, commandId: string) => {
+        const container = document.querySelector(`[data-test-subj="${id}"]`);
+        const editor = window.MonacoEnvironment?.monaco?.editor
+          ?.getEditors()
+          ?.find((e: any) => container?.contains(e.getDomNode()));
+        if (editor) {
+          editor.focus();
+          editor.trigger('keyboard', commandId, {});
+        }
+      },
+      testSubjId,
+      keyToCommandId[key] ?? key
+    );
+  }
+
   public async getCodeEditorSuggestWidget(): Promise<WebElementWrapper> {
     return this.findService.byCssSelector(
       '[data-test-subj="kbnCodeEditorEditorOverflowWidgetsContainer"] .suggest-widget'
