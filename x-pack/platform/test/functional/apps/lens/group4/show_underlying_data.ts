@@ -175,11 +175,13 @@ export default function ({ getService, getPageObjects }: FtrProviderContext) {
       await lens.configureDimension({
         dimension: 'lnsXY_yDimensionPanel > lns-empty-dimension',
         operation: 'formula',
-        formula: `average(memory, kql=`,
         keepOpen: true,
       });
 
-      await lens.simulateTypingInFormula(`bytes > 2000`);
+      // Type formula char-by-char so Monaco's keyboard handlers fire:
+      // `(` auto-inserts `)`, and `kql=` auto-inserts '' (cursor between quotes).
+      // Then ArrowRight exits the auto-inserted closing quote.
+      await lens.simulateTypingInFormula(`average(memory, kql=bytes > 2000`);
       await lens.simulateKeyInFormula('ArrowRight');
 
       await lens.closeDimensionEditor();
