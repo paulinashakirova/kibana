@@ -497,6 +497,10 @@ export class ConsolePageObject extends FtrService {
     return await this.testSubjects.exists('consoleMenuCopyAsButton');
   }
 
+  public async isSelectLanguageButtonVisible() {
+    return await this.testSubjects.exists('consoleMenuSelectLanguage');
+  }
+
   public async clickCopyAsCurlButton() {
     const button = await this.testSubjects.find('consoleMenuCopyAsCurl');
     await button.click();
