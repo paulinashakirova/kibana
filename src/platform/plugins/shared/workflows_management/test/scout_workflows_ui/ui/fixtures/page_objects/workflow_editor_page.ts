@@ -379,10 +379,14 @@ export class WorkflowEditorPage {
         const endOffset = offset + text.length;
         const position = model.getPositionAt(endOffset);
 
-        // Get the editor instance and set cursor position + focus
+        // Get the editor instance by matching the model URI (avoids picking the wrong
+        // editor when multiple editors exist on the page, e.g. JSON input editors).
         const editors = monacoEnv.monaco.editor.getEditors();
-        if (editors.length > 0) {
-          const editor = editors[0];
+        const editor = editors.find(
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Monaco editor instances are untyped in the browser context
+          (e: any) => e.getModel()?.uri?.toString() === model.uri.toString()
+        );
+        if (editor) {
           editor.setPosition(position);
           editor.focus();
           // Trigger suggest directly via the editor command

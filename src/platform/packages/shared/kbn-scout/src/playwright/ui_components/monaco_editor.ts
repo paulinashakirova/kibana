@@ -20,13 +20,41 @@ import type { ScoutPage } from '..';
 export class KibanaCodeEditorWrapper {
   constructor(private readonly page: ScoutPage) {}
 
+  private async getEditorModelUriByTestSubj(testSubjId: string): Promise<string> {
+    const modelUri = await this.page.evaluate((id) => {
+      const container = document.querySelector(`[data-test-subj="${id}"]`);
+      return container?.querySelector('.monaco-editor[data-uri]')?.getAttribute('data-uri') ?? null;
+    }, testSubjId);
+
+    if (!modelUri) {
+      throw new Error(`Editor model URI not found for data-test-subj="${testSubjId}"`);
+    }
+
+    return modelUri;
+  }
+
   /**
    * Waits for the Monaco textarea inside the container (visible + enabled), like FTR
    * `waitCodeEditorReady`.
    */
   async waitCodeEditorReady(dataTestSubjId: string): Promise<void> {
-    const editor = this.page.getByTestId(dataTestSubjId).getByTestId('kibanaCodeEditor');
-    await expect(editor).toBeVisible();
+    const editorContainer = this.page.getByTestId(dataTestSubjId);
+    await expect(editorContainer).toBeVisible();
+
+    await expect
+      .poll(
+        async () =>
+          this.page.evaluate((id) => {
+            const monacoEnv = (window as Window & { MonacoEnvironment?: any }).MonacoEnvironment;
+            const container = document.querySelector(`[data-test-subj="${id}"]`);
+            const editor = monacoEnv?.monaco?.editor
+              ?.getEditors?.()
+              ?.find((instance: any) => container?.contains(instance.getDomNode()));
+            return Boolean(editor);
+          }, dataTestSubjId),
+        { timeout: 10_000 }
+      )
+      .toBe(true);
   }
 
   /**
@@ -100,6 +128,37 @@ export class KibanaCodeEditorWrapper {
 
     // Return the new value for later assertions
     return await this.getCodeEditorValue(nthIndex ?? 0);
+  }
+
+  /**
+   * Sets the value of the Monaco editor contained within a given data-test-subj container.
+   * Mirrors the FTR approach: resolve the model for that editor and update it directly.
+   */
+  async setCodeEditorValueByTestSubj(testSubjId: string, value: string): Promise<void> {
+    await this.waitCodeEditorReady(testSubjId);
+    const modelUri = await this.getEditorModelUriByTestSubj(testSubjId);
+
+    await this.page.evaluate(
+      ({ uri, text }) => {
+        const monacoEditorApi = (window as Window & { MonacoEnvironment?: any }).MonacoEnvironment
+          ?.monaco?.editor;
+        if (!monacoEditorApi) {
+          throw new Error('MonacoEnvironment.monaco.editor is not available');
+        }
+
+        const model = monacoEditorApi.getModel(uri);
+        if (!model) {
+          throw new Error(`Editor model not found for URI "${uri}"`);
+        }
+        model.setValue(text);
+
+        const editor = monacoEditorApi
+          .getEditors?.()
+          ?.find((instance: any) => instance.getModel()?.uri?.toString() === uri);
+        editor?.focus();
+      },
+      { uri: modelUri, text: value }
+    );
   }
 
   /**

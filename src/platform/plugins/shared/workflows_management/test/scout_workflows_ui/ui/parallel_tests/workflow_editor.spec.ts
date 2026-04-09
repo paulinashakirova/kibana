@@ -76,14 +76,14 @@ test.describe(
       const workflowName = 'Invalid Workflow';
       await pageObjects.workflowEditor.setYamlEditorValue(getInvalidWorkflowYaml(workflowName));
 
-      // Wait for validation to complete and show errors
+      // Wait for validation to complete and show errors.
+      // Monaco YAML schema validation runs in a web worker — wait for the accordion button
+      // to become enabled (disabled when no errors). Use a generous timeout since the web
+      // worker needs time to parse the schema and emit markers.
       const validationAccordion = pageObjects.workflowEditor.validationErrorsAccordion;
       await expect(validationAccordion).toBeVisible();
-      await expect(validationAccordion).toContainText('error');
-
-      // Click to expand the accordion and verify the specific error message.
       const errorButton = validationAccordion.getByRole('button', { name: 'error' });
-      await expect(errorButton).toBeEnabled();
+      await expect(errorButton).toBeEnabled({ timeout: 20000 });
       await errorButton.click();
       await expect(validationAccordion.getByText('missing property "steps"')).toBeVisible();
 
@@ -105,9 +105,10 @@ test.describe(
       // Click on the "type:" line to focus the editor at that position
       await page.getByText('type:', { exact: true }).click();
 
-      // Move to end of line and trigger autocomplete
+      // Move to end of line; then type a space via Monaco API (EditContext: keyboard text
+      // input no longer reaches Monaco via page.keyboard.press).
       await page.keyboard.press('End');
-      await page.keyboard.press('Space');
+      await pageObjects.workflowEditor.typeInYamlEditor(' ');
 
       // Verify the suggest widget appears with step type options
       const suggestWidget = pageObjects.workflowEditor.getYamlEditorSuggestWidget();
@@ -128,7 +129,8 @@ test.describe(
       await page.keyboard.press('Enter');
       await pageObjects.workflowEditor.typeInYamlEditor('with:');
       await page.keyboard.press('Enter');
-      await page.keyboard.press('Space');
+      // Type space via Monaco API — page.keyboard.press('Space') doesn't reach Monaco with EditContext
+      await pageObjects.workflowEditor.typeInYamlEditor(' ');
 
       await expect(suggestWidget).toBeVisible();
       await pageObjects.workflowEditor.typeInYamlEditor('ind');

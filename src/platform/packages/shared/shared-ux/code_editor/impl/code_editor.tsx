@@ -523,17 +523,45 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
       });
       editor.onDidBlurEditorText(onBlurMonaco);
 
-      const messageContribution = editor.getContribution('editor.contrib.messageController');
+      let messageContribution:
+        | (monaco.editor.IEditorContribution & {
+            showMessage?: (message: string, position: monaco.Position | null) => void;
+          })
+        | undefined;
+      try {
+        messageContribution = editor.getContribution(
+          'editor.contrib.messageController'
+        ) as typeof messageContribution;
+      } catch {
+        // Monaco internal contribution IDs can change across versions.
+        // Skip read-only inline messages if contribution is unavailable.
+      }
       editor.onDidAttemptReadOnlyEdit(() => {
-        // @ts-expect-error the show message API does exist and is documented here
-        // https://github.com/microsoft/vscode/commit/052f02175f4752c36024c18cfbca4e13403e10c3
-        messageContribution?.showMessage(readOnlyMessage, editor.getPosition());
+        messageContribution?.showMessage?.(readOnlyMessage, editor.getPosition());
       });
 
-      // "widget" is not part of the TS interface but does exist
-      // @ts-expect-errors
-      const suggestionWidget = editor.getContribution('editor.contrib.suggestController')?.widget
-        ?.value;
+      let suggestionWidget:
+        | {
+            onDidShow?: (cb: () => void) => void;
+            onDidHide?: (cb: () => void) => void;
+          }
+        | undefined;
+      try {
+        const suggestionController = editor.getContribution('editor.contrib.suggestController') as
+          | (monaco.editor.IEditorContribution & {
+              widget?: {
+                value?: {
+                  onDidShow?: (cb: () => void) => void;
+                  onDidHide?: (cb: () => void) => void;
+                };
+              };
+            })
+          | undefined;
+        suggestionWidget = suggestionController?.widget?.value;
+      } catch {
+        // Monaco internal contribution IDs can change across versions.
+        // Autocomplete-menu tracking is optional, so continue when unavailable.
+      }
 
       // As I haven't found official documentation for "onDidShow" and "onDidHide"
       // we guard from possible changes in the underlying lib
