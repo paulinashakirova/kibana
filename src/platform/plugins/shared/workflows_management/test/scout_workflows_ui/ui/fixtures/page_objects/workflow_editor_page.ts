@@ -112,7 +112,7 @@ export class WorkflowEditorPage {
         if (!monacoEnv?.monaco?.editor) {
           throw new Error('MonacoEnvironment.monaco.editor is not available');
         }
-        const editorModel = monacoEnv.monaco.editor.getModel(modelUri);
+        const editorModel = monacoEnv.monaco.editor.getModel(monacoEnv.monaco.Uri.parse(modelUri));
         if (!editorModel) {
           throw new Error('Editor not found');
         }
@@ -150,7 +150,7 @@ export class WorkflowEditorPage {
           throw new Error('MonacoEnvironment.monaco.editor is not available');
         }
 
-        const model = monacoEnv.monaco.editor.getModel(modelUri);
+        const model = monacoEnv.monaco.editor.getModel(monacoEnv.monaco.Uri.parse(modelUri));
         if (!model) {
           throw new Error('Editor model not found');
         }
@@ -203,7 +203,7 @@ export class WorkflowEditorPage {
       if (!monacoEnv?.monaco?.editor) {
         throw new Error('MonacoEnvironment.monaco.editor is not available');
       }
-      const model = monacoEnv.monaco.editor.getModel(modelUri);
+      const model = monacoEnv.monaco.editor.getModel(monacoEnv.monaco.Uri.parse(modelUri));
       if (!model) {
         throw new Error('Editor model not found');
       }
@@ -363,7 +363,7 @@ export class WorkflowEditorPage {
         if (!monacoEnv?.monaco?.editor) {
           throw new Error('MonacoEnvironment.monaco.editor is not available');
         }
-        const model = monacoEnv.monaco.editor.getModel(modelUri);
+        const model = monacoEnv.monaco.editor.getModel(monacoEnv.monaco.Uri.parse(modelUri));
         if (!model) {
           throw new Error('Editor model not found');
         }
@@ -455,7 +455,7 @@ export class WorkflowEditorPage {
           throw new Error('MonacoEnvironment.monaco.editor is not available');
         }
 
-        const model = monacoEnv.monaco.editor.getModel(modelUri);
+        const model = monacoEnv.monaco.editor.getModel(monacoEnv.monaco.Uri.parse(modelUri));
         if (!model) {
           throw new Error('Editor model not found');
         }

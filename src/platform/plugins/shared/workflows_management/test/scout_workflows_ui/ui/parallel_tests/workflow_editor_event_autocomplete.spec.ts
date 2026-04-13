@@ -41,12 +41,12 @@ test.describe(
       await expect(suggestWidget).toBeVisible();
 
       // spaceId should be present
-      await expect(suggestWidget.getByRole('option', { name: 'spaceId' })).toBeVisible();
+      await expect(suggestWidget.getByRole('listitem', { name: 'spaceId' })).toBeVisible();
 
       // Alert-specific properties should NOT be present
-      await expect(suggestWidget.getByRole('option', { name: 'alerts' })).not.toBeVisible();
-      await expect(suggestWidget.getByRole('option', { name: 'rule' })).not.toBeVisible();
-      await expect(suggestWidget.getByRole('option', { name: 'params' })).not.toBeVisible();
+      await expect(suggestWidget.getByRole('listitem', { name: 'alerts' })).toHaveCount(0);
+      await expect(suggestWidget.getByRole('listitem', { name: 'rule' })).toHaveCount(0);
+      await expect(suggestWidget.getByRole('listitem', { name: 'params' })).toHaveCount(0);
     });
 
     test('alert trigger: event.* should suggest alerts, rule, params, and spaceId', async ({
@@ -62,10 +62,10 @@ test.describe(
       await expect(suggestWidget).toBeVisible();
 
       // All event properties should be present for alert trigger
-      await expect(suggestWidget.getByRole('option', { name: 'spaceId' })).toBeVisible();
-      await expect(suggestWidget.getByRole('option', { name: 'alerts' })).toBeVisible();
-      await expect(suggestWidget.getByRole('option', { name: 'rule' })).toBeVisible();
-      await expect(suggestWidget.getByRole('option', { name: 'params' })).toBeVisible();
+      await expect(suggestWidget.getByRole('listitem', { name: 'spaceId' })).toBeVisible();
+      await expect(suggestWidget.getByRole('listitem', { name: 'alerts' })).toBeVisible();
+      await expect(suggestWidget.getByRole('listitem', { name: 'rule' })).toBeVisible();
+      await expect(suggestWidget.getByRole('listitem', { name: 'params' })).toBeVisible();
     });
   }
 );
