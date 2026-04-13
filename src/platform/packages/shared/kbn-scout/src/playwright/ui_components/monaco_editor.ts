@@ -146,7 +146,13 @@ export class KibanaCodeEditorWrapper {
           throw new Error('MonacoEnvironment.monaco.editor is not available');
         }
 
-        const model = monacoEditorApi.getModel(uri);
+        const monacoUri = (
+          window as Window & { MonacoEnvironment?: any }
+        ).MonacoEnvironment?.monaco?.Uri.parse(uri);
+        if (!monacoUri) {
+          throw new Error('Monaco Uri is not available');
+        }
+        const model = monacoEditorApi.getModel(monacoUri);
         if (!model) {
           throw new Error(`Editor model not found for URI "${uri}"`);
         }

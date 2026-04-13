@@ -44,3 +44,36 @@ window.MonacoEnvironment = {
       }
     : () => '',
 };
+
+// Monaco 0.54 changed createWebWorker to accept `{ worker: Worker|Promise<Worker> }` instead of
+// the previous `{ moduleId, label, createData }`. monaco-yaml (via monaco-worker-manager@2) still
+// uses the old signature. This shim intercepts old-style calls, manually creates the Worker, sends
+// the two initialization messages monaco-worker-manager requires before Monaco's own INITIALIZE
+// handshake, then forwards to the real createWebWorker with the new API.
+{
+  // Monaco's editor.api.d.ts merges two `editor` namespaces so `createWebWorker` is typed only as
+  // the legacy `{ moduleId }` overload; the runtime accepts `IInternalWebWorkerOptions` as well.
+  const originalCreateWebWorker = monaco.editor.createWebWorker as <T extends object>(
+    opts: monaco.editor.IInternalWebWorkerOptions | monaco.editor.IWebWorkerOptions
+  ) => monaco.editor.MonacoWebWorker<T>;
+  monaco.editor.createWebWorker = function (opts: any) {
+    if (opts?.moduleId && !opts?.worker) {
+      const label: string = opts.label ?? 'default';
+      const url: string =
+        typeof window.MonacoEnvironment?.getWorkerUrl === 'function'
+          ? window.MonacoEnvironment.getWorkerUrl('workerMain.js', label) ?? ''
+          : '';
+      if (url) {
+        const worker = new Worker(url, { name: label });
+        worker.postMessage({}); // trigger: installs monaco-worker-manager's onmessage handler
+        worker.postMessage(opts.createData ?? {}); // createData payload for the language service factory
+        return originalCreateWebWorker.call(this, {
+          worker,
+          host: opts.host,
+          keepIdleModels: opts.keepIdleModels,
+        });
+      }
+    }
+    return originalCreateWebWorker.call(this, opts);
+  };
+}
