@@ -341,6 +341,7 @@ export class MonacoEditorService extends FtrService {
       ArrowUp: 'cursorUp',
       ArrowDown: 'cursorDown',
       Escape: 'hideSuggestWidget',
+      Enter: 'acceptSelectedSuggestion',
     };
     await this.browser.execute(
       (id: string, commandId: string) => {
