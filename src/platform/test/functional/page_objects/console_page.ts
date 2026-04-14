@@ -74,12 +74,26 @@ export class ConsolePageObject extends FtrService {
   }
 
   public async pressEnter() {
-    const textArea = await this.getTextArea();
-    await textArea.pressKeys(Key.ENTER);
+    await this.monacoEditor.appendToCodeEditor('consoleMonacoEditor', '\n');
+  }
+
+  public async acceptAutocompleteSuggestion() {
+    await this.monacoEditor.simulateKeyCommand('consoleMonacoEditor', 'acceptSelectedSuggestion');
   }
 
   public async enterText(text: string) {
+    if (!text) return;
     await this.monacoEditor.appendToCodeEditor('consoleMonacoEditor', text);
+    await this.monacoEditor.triggerSuggest('consoleMonacoEditor');
+  }
+
+  /**
+   * Explicitly ask Monaco to evaluate completions at the current cursor position,
+   * without inserting any text. Use this after multi-line enterText calls where
+   * the ending text is a trigger character (e.g. triple-quote for ESQL).
+   */
+  public async triggerSuggest() {
+    await this.monacoEditor.triggerSuggest('consoleMonacoEditor');
   }
 
   public async appendText(text: string) {
@@ -87,7 +101,8 @@ export class ConsolePageObject extends FtrService {
   }
 
   public async promptAutocomplete(letter = 'b') {
-    await this.monacoEditor.simulateTyping('consoleMonacoEditor', letter);
+    await this.monacoEditor.appendToCodeEditor('consoleMonacoEditor', letter);
+    await this.monacoEditor.triggerSuggest('consoleMonacoEditor');
     await this.retry.waitFor(
       'autocomplete to be visible',
       async () => await this.isAutocompleteVisible()
@@ -102,10 +117,13 @@ export class ConsolePageObject extends FtrService {
   }
 
   public async getAutocompleteSuggestion(index: number) {
-    await this.retry.waitFor(
-      'verify suggestions widget is displayed',
-      async () => await this.isAutocompleteVisible()
-    );
+    await this.retry.waitFor('suggestions widget has items', async () => {
+      if (!(await this.isAutocompleteVisible())) return false;
+      const widget = await this.find.byClassName('suggest-widget').catch(() => null);
+      if (!widget) return false;
+      const items = await widget.findAllByClassName('monaco-list-row');
+      return items.length > 0;
+    });
 
     const suggestionsWidget = await this.find.byClassName('suggest-widget');
     const suggestions = await suggestionsWidget.findAllByClassName('monaco-list-row');
@@ -193,8 +211,7 @@ export class ConsolePageObject extends FtrService {
   }
 
   public async pressEscape() {
-    const textArea = await this.getTextArea();
-    await textArea.pressKeys(Key.ESCAPE);
+    await this.monacoEditor.simulateKeyCommand('consoleMonacoEditor', 'Escape');
   }
 
   public async selectAllRequests() {

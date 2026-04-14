@@ -310,9 +310,6 @@ export class MonacoEditorService extends FtrService {
     }, nthIndex);
   }
 
-  /**
-   * Type one character at a time via Monaco's keyboard handler (needed for autocomplete in tests).
-   */
   public async simulateTyping(testSubjId: string, text: string) {
     await this.waitCodeEditorReady(testSubjId);
     await this.browser.execute(
@@ -337,15 +334,13 @@ export class MonacoEditorService extends FtrService {
     await textarea.pressKeys(key);
   }
 
-  /**
-   * Trigger a Monaco editor command by key name (e.g. 'ArrowLeft', 'ArrowRight').
-   */
   public async simulateKeyCommand(testSubjId: string, key: string) {
     const keyToCommandId: Record<string, string> = {
       ArrowLeft: 'cursorLeft',
       ArrowRight: 'cursorRight',
       ArrowUp: 'cursorUp',
       ArrowDown: 'cursorDown',
+      Escape: 'hideSuggestWidget',
     };
     await this.browser.execute(
       (id: string, commandId: string) => {
@@ -361,6 +356,19 @@ export class MonacoEditorService extends FtrService {
       testSubjId,
       keyToCommandId[key] ?? key
     );
+  }
+
+  public async triggerSuggest(testSubjId: string) {
+    await this.browser.execute((id: string) => {
+      const container = document.querySelector(`[data-test-subj="${id}"]`);
+      const editor = window.MonacoEnvironment?.monaco?.editor
+        ?.getEditors()
+        ?.find((e: any) => container?.contains(e.getDomNode()));
+      if (editor) {
+        editor.focus();
+        editor.trigger('keyboard', 'editor.action.triggerSuggest', {});
+      }
+    }, testSubjId);
   }
 
   public async getCodeEditorSuggestWidget(): Promise<WebElementWrapper> {
