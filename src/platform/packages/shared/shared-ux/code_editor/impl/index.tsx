@@ -21,7 +21,6 @@ export type { CodeEditorProps } from './code_editor';
 export { monaco } from '@kbn/monaco';
 export * from './react_monaco_editor/languages/supported';
 
-// Re-export the full @kbn/monaco public surface so consumers only need @kbn/code-editor
 export {
   // editor themes
   CODE_EDITOR_DEFAULT_THEME_ID,
@@ -62,6 +61,7 @@ export {
   // undo/redo
   getUndoRedoService,
 } from '@kbn/monaco';
+
 export type {
   // general
   LangModuleType,
