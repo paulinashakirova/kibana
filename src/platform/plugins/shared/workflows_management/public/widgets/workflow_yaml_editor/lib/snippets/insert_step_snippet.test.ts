@@ -8,7 +8,7 @@
  */
 
 import { parseDocument } from 'yaml';
-import { monaco } from '@kbn/monaco';
+import { monaco } from '@kbn/code-editor';
 import * as generateBuiltInStepSnippetModule from './generate_builtin_step_snippet';
 import * as generateConnectorSnippetModule from './generate_connector_snippet';
 import { insertStepSnippet } from './insert_step_snippet';

@@ -11,7 +11,7 @@ import { renderHook } from '@testing-library/react';
 import React from 'react';
 import { Provider } from 'react-redux';
 import { parseDocument } from 'yaml';
-import type { monaco } from '@kbn/monaco';
+import type { monaco } from '@kbn/code-editor';
 import { useWorkflowIdDecorations } from './use_workflow_id_decorations';
 import { createMockStore } from '../../../../entities/workflows/store/__mocks__/store.mock';
 

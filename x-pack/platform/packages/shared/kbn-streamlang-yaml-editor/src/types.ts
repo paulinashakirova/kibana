@@ -5,7 +5,7 @@
  * 2.0.
  */
 
-import type { monaco } from '@kbn/monaco';
+import type { monaco } from '@kbn/code-editor';
 import type { APIReturnType } from '@kbn/streams-plugin/public/api';
 import type { StreamlangDSL } from '@kbn/streamlang/types/streamlang';
 import type { StreamType, StreamlangValidationError } from '@kbn/streamlang';

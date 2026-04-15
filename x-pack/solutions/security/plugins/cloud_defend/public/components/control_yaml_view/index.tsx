@@ -7,7 +7,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { EuiSpacer, EuiText, EuiFlexGroup, EuiFlexItem, EuiForm } from '@elastic/eui';
 import { CodeEditor, YAML_LANG_ID } from '@kbn/code-editor';
-import { monaco } from '@kbn/monaco';
+import { monaco } from '@kbn/code-editor';
 import { uniq } from 'lodash';
 import { INPUT_CONTROL } from '../../../common/constants';
 import { useStyles } from './styles';

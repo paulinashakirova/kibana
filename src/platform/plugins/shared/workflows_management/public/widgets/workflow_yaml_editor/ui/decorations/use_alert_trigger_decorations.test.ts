@@ -9,7 +9,7 @@
 
 import { renderHook } from '@testing-library/react';
 import { parseDocument } from 'yaml';
-import type { monaco } from '@kbn/monaco';
+import type { monaco } from '@kbn/code-editor';
 import { useAlertTriggerDecorations } from './use_alert_trigger_decorations';
 
 jest.mock('@kbn/monaco', () => {

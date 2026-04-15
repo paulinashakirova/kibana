@@ -8,7 +8,7 @@
  */
 
 import { renderHook } from '@testing-library/react';
-import type { monaco } from '@kbn/monaco';
+import type { monaco } from '@kbn/code-editor';
 import { useLineDifferencesDecorations } from './use_line_differences_decorations';
 
 jest.mock('@kbn/monaco', () => {

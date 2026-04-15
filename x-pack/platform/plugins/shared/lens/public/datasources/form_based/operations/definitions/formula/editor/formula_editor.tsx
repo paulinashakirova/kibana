@@ -29,7 +29,7 @@ import {
   type UseEuiTheme,
 } from '@elastic/eui';
 import useUnmount from 'react-use/lib/useUnmount';
-import { monaco } from '@kbn/monaco';
+import { monaco } from '@kbn/code-editor';
 import type { CodeEditorProps } from '@kbn/code-editor';
 import { CodeEditor } from '@kbn/code-editor';
 import { UI_SETTINGS } from '@kbn/data-plugin/public';

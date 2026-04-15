@@ -6,8 +6,7 @@
  */
 
 import React, { useCallback, useEffect, useRef } from 'react';
-import { CodeEditor } from '@kbn/code-editor';
-import { monaco } from '@kbn/monaco';
+import { CodeEditor, monaco } from '@kbn/code-editor';
 import type { SchemasSettings } from 'monaco-yaml';
 import { templateYamlLanguageService } from '../utils/template_yaml_language_service';
 import type { ValidationError } from './template_yaml_validation_accordion';

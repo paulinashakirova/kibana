@@ -6,7 +6,7 @@
  */
 
 import { i18n } from '@kbn/i18n';
-import { monaco } from '@kbn/monaco';
+import { monaco } from '@kbn/code-editor';
 import { getFlattenedObject } from '@kbn/std';
 import type { Filter, AggregateQuery, Query, TimeRange } from '@kbn/es-query';
 import type {

@@ -9,7 +9,7 @@
 
 import type { LineCounter, Scalar } from 'yaml';
 import { YAMLMap } from 'yaml';
-import { monaco } from '@kbn/monaco';
+import { monaco } from '@kbn/code-editor';
 import {
   getCustomPropertySuggestions,
   type GetCustomPropertySuggestionsContext,

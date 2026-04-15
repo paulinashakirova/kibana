@@ -10,7 +10,7 @@
 /*
  * Mock the function "populateContext" that accesses the autocomplete definitions
  */
-import type { monaco } from '@kbn/monaco';
+import type { monaco } from '@kbn/code-editor';
 
 const mockPopulateContext = jest.fn();
 

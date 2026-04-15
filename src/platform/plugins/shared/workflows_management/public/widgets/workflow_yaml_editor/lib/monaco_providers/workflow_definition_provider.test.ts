@@ -8,7 +8,7 @@
  */
 
 import YAML from 'yaml';
-import { monaco } from '@kbn/monaco';
+import { monaco } from '@kbn/code-editor';
 import { WorkflowDefinitionProvider } from './workflow_definition_provider';
 import type { WorkflowLookup } from '../../../../entities/workflows/store/workflow_detail/utils/build_workflow_lookup';
 

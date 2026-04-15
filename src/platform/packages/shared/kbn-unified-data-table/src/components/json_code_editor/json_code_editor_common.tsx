@@ -10,8 +10,8 @@
 import React from 'react';
 import { css } from '@emotion/react';
 import { i18n } from '@kbn/i18n';
-import type { monaco } from '@kbn/monaco';
-import { XJsonLang } from '@kbn/monaco';
+import type { monaco } from '@kbn/code-editor';
+import { XJsonLang } from '@kbn/code-editor';
 import { EuiButtonEmpty, EuiCopy, EuiFlexGroup, EuiFlexItem, EuiSpacer } from '@elastic/eui';
 import { CodeEditor } from '@kbn/code-editor';
 const codeEditorAriaLabel = i18n.translate('unifiedDataTable.json.codeEditorAriaLabel', {

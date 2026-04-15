@@ -5,7 +5,7 @@
  * 2.0.
  */
 import { XJson } from '@kbn/es-ui-shared-plugin/public';
-import type { monaco } from '@kbn/monaco';
+import type { monaco } from '@kbn/code-editor';
 import type { JsonValue } from '@kbn/utility-types';
 import type { ProcessorSuggestionsResponse } from '@kbn/streams-plugin/common';
 import type { StreamsRepositoryClient } from '@kbn/streams-plugin/public/api';

@@ -8,7 +8,7 @@
  */
 
 import { Document, LineCounter, Scalar } from 'yaml';
-import { monaco } from '@kbn/monaco';
+import { monaco } from '@kbn/code-editor';
 import { z } from '@kbn/zod/v4';
 import { getVariableSuggestions } from './get_variable_suggestions';
 import type { StepPropInfo } from '../../../../../../entities/workflows/store';

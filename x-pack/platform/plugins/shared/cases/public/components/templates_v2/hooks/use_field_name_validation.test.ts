@@ -7,7 +7,7 @@
 
 import { renderHook } from '@testing-library/react';
 import { parse } from 'yaml';
-import { monaco } from '@kbn/monaco';
+import { monaco } from '@kbn/code-editor';
 import {
   useFieldNameValidation,
   collectFieldNames,

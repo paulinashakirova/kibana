@@ -5,7 +5,7 @@
  * 2.0.
  */
 
-import type { monaco } from '@kbn/monaco';
+import type { monaco } from '@kbn/code-editor';
 import { ACTION_METADATA_MAP, type ActionMetadata } from '@kbn/streamlang';
 import { i18n } from '@kbn/i18n';
 import type { ActionHoverContext } from './provider_interfaces';

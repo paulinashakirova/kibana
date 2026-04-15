@@ -34,7 +34,7 @@ import {
 import type { EuiBasicTableColumn } from '@elastic/eui';
 import { css } from '@emotion/css';
 import { i18n } from '@kbn/i18n';
-import { CODE_EDITOR_DEFAULT_THEME_ID, defaultThemesResolvers, monaco } from '@kbn/monaco';
+import { CODE_EDITOR_DEFAULT_THEME_ID, defaultThemesResolvers, monaco } from '@kbn/code-editor';
 import {
   useMemoryTree,
   useMemorySearch,

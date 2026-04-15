@@ -11,7 +11,7 @@ import type { PackageInfo } from '@kbn/config';
 import { fromRoot } from '@kbn/repo-info';
 import UiSharedDepsNpm from '@kbn/ui-shared-deps-npm';
 import { distDir as UiSharedDepsSrcDistDir } from '@kbn/ui-shared-deps-src';
-import * as KbnMonaco from '@kbn/monaco/server';
+import * as KbnMonaco from '@kbn/code-editor/server';
 import type { IRouter } from '@kbn/core-http-server';
 import type { UiPlugins } from '@kbn/core-plugins-base-server-internal';
 import type { InternalStaticAssets } from '@kbn/core-http-server-internal';

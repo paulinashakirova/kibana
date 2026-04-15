@@ -18,7 +18,7 @@ import {
   EuiPortal,
 } from '@elastic/eui';
 import { i18n } from '@kbn/i18n';
-import { monaco } from '@kbn/monaco';
+import { monaco } from '@kbn/code-editor';
 
 // @ts-expect-error
 import { Shortcuts } from 'react-shortcuts';

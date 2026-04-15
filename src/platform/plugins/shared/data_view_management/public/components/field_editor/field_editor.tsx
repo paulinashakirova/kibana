@@ -35,7 +35,7 @@ import {
 
 import { i18n } from '@kbn/i18n';
 import { FormattedMessage, I18nProvider } from '@kbn/i18n-react';
-import { PainlessLang } from '@kbn/monaco';
+import { PainlessLang } from '@kbn/code-editor';
 import type {
   FieldFormat,
   FieldFormatInstanceType,

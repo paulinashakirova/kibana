@@ -7,7 +7,7 @@
  * License v3.0 only", or the "Server Side Public License, v 1".
  */
 
-import { XJsonLang } from '@kbn/monaco';
+import { XJsonLang } from '@kbn/code-editor';
 import useMount from 'react-use/lib/useMount';
 import hjson from 'hjson';
 

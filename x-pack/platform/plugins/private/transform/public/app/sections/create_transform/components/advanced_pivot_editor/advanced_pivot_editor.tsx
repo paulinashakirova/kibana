@@ -6,7 +6,7 @@
  */
 
 import { EuiFormRow } from '@elastic/eui';
-import { monaco } from '@kbn/monaco';
+import { monaco } from '@kbn/code-editor';
 import { isEqual } from 'lodash';
 import type { FC } from 'react';
 import React, { memo } from 'react';

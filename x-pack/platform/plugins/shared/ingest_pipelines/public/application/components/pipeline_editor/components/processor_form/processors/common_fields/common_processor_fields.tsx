@@ -8,7 +8,7 @@
 import type { FunctionComponent } from 'react';
 import React from 'react';
 import { i18n } from '@kbn/i18n';
-import { PainlessLang } from '@kbn/monaco';
+import { PainlessLang } from '@kbn/code-editor';
 
 import { FormattedMessage } from '@kbn/i18n-react';
 import { EuiCode } from '@elastic/eui';

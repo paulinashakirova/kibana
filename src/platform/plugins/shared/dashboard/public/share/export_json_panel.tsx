@@ -26,7 +26,7 @@ import {
   useGeneratedHtmlId,
 } from '@elastic/eui';
 import { i18n } from '@kbn/i18n';
-import { XJsonLang } from '@kbn/monaco';
+import { XJsonLang } from '@kbn/code-editor';
 import { compressToEncodedURIComponent } from 'lz-string';
 import { CodeEditor } from '@kbn/code-editor';
 import type { ExportJsonSanitizedState } from './types';

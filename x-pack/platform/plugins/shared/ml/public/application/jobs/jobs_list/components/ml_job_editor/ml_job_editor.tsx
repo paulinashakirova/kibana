@@ -7,7 +7,7 @@
 
 import type { FC } from 'react';
 import React from 'react';
-import { monaco, XJsonLang } from '@kbn/monaco';
+import { monaco, XJsonLang } from '@kbn/code-editor';
 import { CodeEditor, type CodeEditorProps } from '@kbn/code-editor';
 import { XJson } from '@kbn/es-ui-shared-plugin/public';
 

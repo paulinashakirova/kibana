@@ -11,7 +11,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { css } from '@emotion/react';
 import { omit } from 'lodash';
 import { FormattedMessage } from '@kbn/i18n-react';
-import type { monaco } from '@kbn/monaco';
+import type { monaco } from '@kbn/code-editor';
 import {
   EuiButton,
   EuiEmptyPrompt,

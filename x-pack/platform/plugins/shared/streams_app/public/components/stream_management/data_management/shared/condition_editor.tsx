@@ -29,7 +29,7 @@ import {
 } from '@kbn/streamlang';
 import type { RoutingStatus } from '@kbn/streams-schema';
 import debounce from 'lodash/debounce';
-import type { monaco } from '@kbn/monaco';
+import type { monaco } from '@kbn/code-editor';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import useToggle from 'react-use/lib/useToggle';
 import yaml from 'yaml';

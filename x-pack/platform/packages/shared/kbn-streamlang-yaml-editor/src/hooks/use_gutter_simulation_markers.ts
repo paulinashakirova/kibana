@@ -6,7 +6,7 @@
  */
 
 import { useEffect, useMemo } from 'react';
-import { monaco } from '@kbn/monaco';
+import { monaco } from '@kbn/code-editor';
 import { i18n } from '@kbn/i18n';
 import type { ProcessorMetrics, ProcessorsMetrics, StepStatus, StepSummary } from '../types';
 import type { YamlLineMap } from '../utils/yaml_line_mapper';

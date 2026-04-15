@@ -8,7 +8,7 @@
  */
 
 import YAML, { Document } from 'yaml';
-import { monaco } from '@kbn/monaco';
+import { monaco } from '@kbn/code-editor';
 import { z } from '@kbn/zod/v4';
 import {
   getWorkflowOutputsSuggestions,

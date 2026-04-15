@@ -15,7 +15,7 @@
 //
 
 import React, { useCallback } from 'react';
-import { monaco } from '@kbn/monaco';
+import { monaco } from '@kbn/code-editor';
 
 import {
   CodeEditor as KibanaReactCodeEditor,

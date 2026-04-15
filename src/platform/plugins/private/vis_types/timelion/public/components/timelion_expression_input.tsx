@@ -10,7 +10,7 @@
 import React, { useEffect, useCallback, useRef, useMemo } from 'react';
 import { euiBreakpoint, EuiFormLabel, type UseEuiTheme } from '@elastic/eui';
 import { FormattedMessage } from '@kbn/i18n-react';
-import { monaco } from '@kbn/monaco';
+import { monaco } from '@kbn/code-editor';
 
 import { useKibana } from '@kbn/kibana-react-plugin/public';
 import { CodeEditor } from '@kbn/code-editor';

@@ -19,7 +19,7 @@ import {
   EuiButton,
   EuiButtonEmpty,
 } from '@elastic/eui';
-import { XJsonLang } from '@kbn/monaco';
+import { XJsonLang } from '@kbn/code-editor';
 import { i18n } from '@kbn/i18n';
 
 import { CodeEditorField } from '@kbn/code-editor';

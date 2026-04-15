@@ -8,8 +8,8 @@
  */
 
 import { isScalar, parseDocument } from 'yaml';
+import { monaco } from '@kbn/code-editor';
 import { QuerySuggestionTypes } from '@kbn/kql/public';
-import { monaco } from '@kbn/monaco';
 import {
   buildKqlMonacoFilterText,
   getTriggerConditionKqlSpan,

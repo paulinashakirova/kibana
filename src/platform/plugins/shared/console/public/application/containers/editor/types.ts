@@ -7,7 +7,7 @@
  * License v3.0 only", or the "Server Side Public License, v 1".
  */
 
-import type { ParsedRequest } from '@kbn/monaco';
+import type { ParsedRequest } from '@kbn/code-editor';
 
 export interface EditorRequest {
   method: string;

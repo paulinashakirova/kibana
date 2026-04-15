@@ -15,7 +15,7 @@ import {
   EuiFlexItem,
   EuiSpacer,
 } from '@elastic/eui';
-import { XJsonLang } from '@kbn/monaco';
+import { XJsonLang } from '@kbn/code-editor';
 import { CodeEditor } from '@kbn/code-editor';
 import { compressToEncodedURIComponent } from 'lz-string';
 import {

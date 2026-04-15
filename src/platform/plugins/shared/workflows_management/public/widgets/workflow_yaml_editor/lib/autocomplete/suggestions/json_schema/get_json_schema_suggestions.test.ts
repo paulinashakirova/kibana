@@ -7,7 +7,7 @@
  * License v3.0 only", or the "Server Side Public License, v 1".
  */
 
-import { monaco } from '@kbn/monaco';
+import { monaco } from '@kbn/code-editor';
 import { getJsonSchemaSuggestions } from './get_json_schema_suggestions';
 import type { ExtendedAutocompleteContext } from '../../context/autocomplete.types';
 

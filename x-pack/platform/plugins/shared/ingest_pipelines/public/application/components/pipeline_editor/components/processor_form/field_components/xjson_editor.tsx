@@ -5,7 +5,7 @@
  * 2.0.
  */
 
-import { XJsonLang } from '@kbn/monaco';
+import { XJsonLang } from '@kbn/code-editor';
 import type { FunctionComponent } from 'react';
 import React, { useCallback } from 'react';
 import type { FieldHook } from '../../../../../../shared_imports';

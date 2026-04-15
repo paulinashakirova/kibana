@@ -8,7 +8,7 @@
  */
 
 import { parseDocument } from 'yaml';
-import { monaco } from '@kbn/monaco';
+import { monaco } from '@kbn/code-editor';
 import * as generateTriggerSnippetModule from './generate_trigger_snippet';
 import { insertTriggerSnippet } from './insert_trigger_snippet';
 import { createFakeMonacoModel } from '../../../../../common/mocks/monaco_model';

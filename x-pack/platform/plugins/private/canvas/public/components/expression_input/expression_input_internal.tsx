@@ -8,7 +8,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { debounce } from 'lodash';
 
-import type { monaco } from '@kbn/monaco';
+import type { monaco } from '@kbn/code-editor';
 import usePrevious from 'react-use/lib/usePrevious';
 
 import { CodeEditor } from '@kbn/code-editor';

@@ -23,7 +23,7 @@ import { i18n } from '@kbn/i18n';
 import { useController } from 'react-hook-form';
 import { LanguageDocumentationPopover } from '@kbn/language-documentation';
 import { Markdown } from '@kbn/shared-ux-markdown';
-import { monaco } from '@kbn/monaco';
+import { monaco } from '@kbn/code-editor';
 import { validateMathExpression, getMathExpressionLanguageDocSections } from '@kbn/streamlang';
 import type { ProcessorFormState } from '../../../../types';
 import { useEnrichmentFieldSuggestions } from '../../../../../../../../hooks/use_field_suggestions';

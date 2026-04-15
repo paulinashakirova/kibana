@@ -9,7 +9,7 @@
 
 import { renderHook } from '@testing-library/react';
 import { parseDocument } from 'yaml';
-import type { monaco } from '@kbn/monaco';
+import type { monaco } from '@kbn/code-editor';
 import { useConnectorTypeDecorations } from './use_connector_type_decorations';
 import { createMockMonacoEditor } from '../../../../shared/test_utils/mock_monaco';
 

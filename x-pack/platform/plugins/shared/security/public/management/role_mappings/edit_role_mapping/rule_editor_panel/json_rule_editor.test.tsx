@@ -10,7 +10,7 @@ import { act } from 'react-dom/test-utils';
 import '@kbn/code-editor-mock/jest_helper';
 
 import { CodeEditorField } from '@kbn/code-editor';
-import type { monaco } from '@kbn/monaco';
+import type { monaco } from '@kbn/code-editor';
 import { shallowWithIntl } from '@kbn/test-jest-helpers';
 
 import { JSONRuleEditor } from './json_rule_editor';

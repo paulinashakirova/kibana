@@ -7,7 +7,7 @@
 
 import { useEffect, useRef } from 'react';
 import { parse } from 'yaml';
-import { monaco } from '@kbn/monaco';
+import { monaco } from '@kbn/code-editor';
 
 interface FieldNameInfo {
   name: string;

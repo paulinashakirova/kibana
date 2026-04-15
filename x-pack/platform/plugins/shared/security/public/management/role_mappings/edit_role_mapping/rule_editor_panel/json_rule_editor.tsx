@@ -8,11 +8,10 @@
 import { EuiButton, EuiFormRow, EuiLink, EuiSpacer, EuiText } from '@elastic/eui';
 import React, { Fragment, useState } from 'react';
 
-import { CodeEditorField } from '@kbn/code-editor';
+import { CodeEditorField, XJsonLang } from '@kbn/code-editor';
 import { i18n } from '@kbn/i18n';
 import { FormattedMessage } from '@kbn/i18n-react';
 import { useKibana } from '@kbn/kibana-react-plugin/public';
-import { XJsonLang } from '@kbn/monaco';
 
 import type { Rule } from '../../model';
 import { generateRulesFromRaw, RuleBuilderError } from '../../model';

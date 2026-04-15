@@ -7,7 +7,7 @@
 
 import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import { CodeEditorField } from '@kbn/code-editor';
-import { ESQL_AUTOCOMPLETE_TRIGGER_CHARS, monaco, YAML_LANG_ID } from '@kbn/monaco';
+import { ESQL_AUTOCOMPLETE_TRIGGER_CHARS, monaco, YAML_LANG_ID } from '@kbn/code-editor';
 import { suggest } from '@kbn/esql-language';
 import type { YamlRuleEditorProps } from './types';
 import { DEFAULT_ESQL_PROPERTY_NAMES } from './types';

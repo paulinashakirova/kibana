@@ -7,7 +7,7 @@
  * License v3.0 only", or the "Server Side Public License, v 1".
  */
 
-import type { monaco } from '@kbn/monaco';
+import type { monaco } from '@kbn/code-editor';
 import { getWorkflowSuggestions } from './get_workflow_suggestions';
 import type { WorkflowsResponse } from '../../../../../../entities/workflows/model/types';
 import { createStepInfo } from '../../../../../../shared/test_utils';

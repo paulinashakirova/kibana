@@ -9,7 +9,7 @@ import _ from 'lodash';
 import React, { Component } from 'react';
 import { i18n } from '@kbn/i18n';
 import type { InspectorViewProps } from '@kbn/inspector-plugin/public';
-import { XJsonLang } from '@kbn/monaco';
+import { XJsonLang } from '@kbn/code-editor';
 import type { EuiComboBoxOptionOption } from '@elastic/eui';
 import { EuiComboBox, EuiFormRow, EuiSpacer, EuiTabs, EuiTab, EuiText } from '@elastic/eui';
 import { CodeEditor } from '@kbn/code-editor';

@@ -8,8 +8,8 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { i18n } from '@kbn/i18n';
 import { FormattedMessage } from '@kbn/i18n-react';
-import type { PainlessContext } from '@kbn/monaco';
-import { PainlessLang } from '@kbn/monaco';
+import type { PainlessContext } from '@kbn/code-editor';
+import { PainlessLang } from '@kbn/code-editor';
 import type { EuiComboBoxOptionOption } from '@elastic/eui';
 import {
   EuiFlexGroup,

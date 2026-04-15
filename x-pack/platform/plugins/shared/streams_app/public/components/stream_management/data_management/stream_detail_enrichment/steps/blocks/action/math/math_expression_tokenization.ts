@@ -5,7 +5,7 @@
  * 2.0.
  */
 
-import { monaco } from '@kbn/monaco';
+import { monaco } from '@kbn/code-editor';
 
 export const STREAMS_MATH_LANGUAGE_ID = 'streams_math';
 

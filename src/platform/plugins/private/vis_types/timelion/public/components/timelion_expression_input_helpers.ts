@@ -9,7 +9,7 @@
 
 import { startsWith } from 'lodash';
 import { i18n } from '@kbn/i18n';
-import { monaco } from '@kbn/monaco';
+import { monaco } from '@kbn/code-editor';
 import { parseTimelionExpressionAsync } from '../../common/parser_async';
 import type {
   ParsedExpression,

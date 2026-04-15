@@ -9,7 +9,7 @@
 
 import type { CodeEditorProps } from '@kbn/code-editor';
 import { CodeEditor } from '@kbn/code-editor';
-import { monaco } from '@kbn/monaco';
+import { monaco } from '@kbn/code-editor';
 import React, { useEffect, useMemo, useRef } from 'react';
 import { combineLatest } from 'rxjs';
 import { css } from '@emotion/react';

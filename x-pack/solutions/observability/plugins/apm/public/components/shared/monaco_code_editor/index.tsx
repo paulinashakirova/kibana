@@ -7,7 +7,7 @@
 
 import React from 'react';
 import { CodeEditor } from '@kbn/code-editor';
-import { monaco } from '@kbn/monaco';
+import { monaco } from '@kbn/code-editor';
 
 interface Props {
   value: string;

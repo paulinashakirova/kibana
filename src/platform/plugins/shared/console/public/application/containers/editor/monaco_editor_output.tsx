@@ -24,8 +24,8 @@ import {
   useEuiTheme,
   transparentize,
 } from '@elastic/eui';
-import type { monaco } from '@kbn/monaco';
-import { CONSOLE_OUTPUT_THEME_ID, CONSOLE_OUTPUT_LANG_ID } from '@kbn/monaco';
+import type { monaco } from '@kbn/code-editor';
+import { CONSOLE_OUTPUT_THEME_ID, CONSOLE_OUTPUT_LANG_ID } from '@kbn/code-editor';
 import {
   getStatusCodeDecorations,
   isJSONContentType,

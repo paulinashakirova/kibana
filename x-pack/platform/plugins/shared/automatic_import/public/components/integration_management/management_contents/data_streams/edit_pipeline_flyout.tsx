@@ -27,8 +27,7 @@ import {
   EuiConfirmModal,
 } from '@elastic/eui';
 import React, { useCallback, useEffect, useMemo, useState, useRef } from 'react';
-import { CodeEditor } from '@kbn/code-editor';
-import { XJsonLang } from '@kbn/monaco';
+import { CodeEditor, XJsonLang } from '@kbn/code-editor';
 import type { DataStreamResponse } from '../../../../../common';
 import { useGetDataStreamResults, useUpdateDataStreamPipeline } from '../../../../common';
 import { useUIState } from '../../contexts';

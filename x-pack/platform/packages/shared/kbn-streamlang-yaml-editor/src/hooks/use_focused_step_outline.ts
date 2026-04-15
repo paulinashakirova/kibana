@@ -7,7 +7,7 @@
 
 import { useEuiTheme } from '@elastic/eui';
 import { useEffect, useMemo, useState } from 'react';
-import { monaco } from '@kbn/monaco';
+import { monaco } from '@kbn/code-editor';
 import type { YamlLineMap } from '../utils/yaml_line_mapper';
 import { getFocusedStepOutlineStyles } from '../styles';
 

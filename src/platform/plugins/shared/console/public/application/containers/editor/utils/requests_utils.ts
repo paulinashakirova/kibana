@@ -7,7 +7,7 @@
  * License v3.0 only", or the "Server Side Public License, v 1".
  */
 
-import type { monaco, ParsedRequest } from '@kbn/monaco';
+import type { monaco, ParsedRequest } from '@kbn/code-editor';
 import { parse } from 'hjson';
 import { i18n } from '@kbn/i18n';
 import { constructUrl } from '../../../../lib/es';

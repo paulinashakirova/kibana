@@ -7,7 +7,7 @@
 
 import { useEuiTheme } from '@elastic/eui';
 import { useEffect, useMemo } from 'react';
-import { monaco } from '@kbn/monaco';
+import { monaco } from '@kbn/code-editor';
 import type { StepDecoration } from '../types';
 import { getStepDecorationsStyles } from '../styles';
 

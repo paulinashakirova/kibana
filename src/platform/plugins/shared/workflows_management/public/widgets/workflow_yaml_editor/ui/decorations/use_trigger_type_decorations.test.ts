@@ -10,7 +10,7 @@
 import { renderHook } from '@testing-library/react';
 import type { MutableRefObject } from 'react';
 import { parseDocument } from 'yaml';
-import type { monaco } from '@kbn/monaco';
+import type { monaco } from '@kbn/code-editor';
 import {
   applyTriggerTypeDecorations,
   useTriggerTypeDecorations,

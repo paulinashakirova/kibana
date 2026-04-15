@@ -8,7 +8,7 @@
 import { CodeEditor } from '@kbn/code-editor';
 import { i18n } from '@kbn/i18n';
 import dfaJsonSchema from '@kbn/json-schemas/src/put___ml_data_frame_analytics__id__schema.json';
-import { monaco } from '@kbn/monaco';
+import { monaco } from '@kbn/code-editor';
 import type { FC } from 'react';
 import React from 'react';
 

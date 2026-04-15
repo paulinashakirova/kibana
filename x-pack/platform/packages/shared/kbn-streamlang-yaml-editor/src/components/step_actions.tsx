@@ -8,7 +8,7 @@
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { EuiButtonIcon, EuiFlexGroup, EuiFlexItem, EuiToolTip, useEuiTheme } from '@elastic/eui';
 import { i18n } from '@kbn/i18n';
-import type { monaco } from '@kbn/monaco';
+import type { monaco } from '@kbn/code-editor';
 import type { SimulationMode } from '../types';
 import { getStepActionsStyles } from '../styles';
 import { canRunSimulationForStep } from '../utils/can_run_simulation';

@@ -9,7 +9,7 @@ import React from 'react';
 import { useController } from 'react-hook-form';
 import { EuiFormRow, EuiLink } from '@elastic/eui';
 import { CodeEditor } from '@kbn/code-editor';
-import { monaco } from '@kbn/monaco';
+import { monaco } from '@kbn/code-editor';
 import { i18n } from '@kbn/i18n';
 import { useAbortController } from '@kbn/react-hooks';
 import type { JsonValue } from '@kbn/utility-types';

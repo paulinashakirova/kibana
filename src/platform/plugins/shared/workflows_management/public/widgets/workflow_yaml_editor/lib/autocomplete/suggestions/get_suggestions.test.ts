@@ -8,7 +8,7 @@
  */
 
 import { parseDocument, Scalar } from 'yaml';
-import { monaco } from '@kbn/monaco';
+import { monaco } from '@kbn/code-editor';
 import { getSuggestions, isInsideLoopBody } from './get_suggestions';
 import type { ExtendedAutocompleteContext } from '../context/autocomplete.types';
 

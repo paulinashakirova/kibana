@@ -7,7 +7,7 @@
 
 import React from 'react';
 import { CodeEditor } from '@kbn/code-editor';
-import { XJsonLang } from '@kbn/monaco';
+import { XJsonLang } from '@kbn/code-editor';
 import type { CspFinding } from '@kbn/cloud-security-posture-common';
 import { EuiPanel } from '@elastic/eui';
 

@@ -5,7 +5,7 @@
  * 2.0.
  */
 import { useMemo, useState, useEffect } from 'react';
-import { monaco, configureMonacoYamlSchema, YAML_LANG_ID } from '@kbn/monaco';
+import { monaco, configureMonacoYamlSchema, YAML_LANG_ID } from '@kbn/code-editor';
 import { getSelectorsAndResponsesFromYaml } from '../../../../common/utils/helpers';
 
 /**

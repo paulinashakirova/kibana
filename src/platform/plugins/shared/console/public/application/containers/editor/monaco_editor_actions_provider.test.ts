@@ -53,7 +53,7 @@ jest.mock('../../hooks', () => ({
 }));
 
 import { MonacoEditorActionsProvider } from './monaco_editor_actions_provider';
-import type { monaco } from '@kbn/monaco';
+import type { monaco } from '@kbn/code-editor';
 import { sendRequest } from '../../hooks';
 import { serviceContextMock } from '../../contexts/services_context.mock';
 

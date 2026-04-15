@@ -5,7 +5,7 @@
  * 2.0.
  */
 
-import { monaco } from '@kbn/monaco';
+import { monaco } from '@kbn/code-editor';
 import { findLast, map, uniqBy } from 'lodash';
 
 export const keywords = [

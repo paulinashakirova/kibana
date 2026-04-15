@@ -7,7 +7,7 @@
  * License v3.0 only", or the "Server Side Public License, v 1".
  */
 
-import type { monaco } from '@kbn/monaco';
+import type { monaco } from '@kbn/code-editor';
 import type { RequestResult } from '../../../hooks/use_send_current_request/send_request';
 import type { StatusCodeClassNames } from '../types';
 

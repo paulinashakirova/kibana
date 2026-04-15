@@ -6,7 +6,7 @@
  */
 
 import YAML from 'yaml';
-import { monaco } from '@kbn/monaco';
+import { monaco } from '@kbn/code-editor';
 import { StreamlangActionHandler } from './streamlang_action_handler';
 import type { ActionHoverContext } from './provider_interfaces';
 

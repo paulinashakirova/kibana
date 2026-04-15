@@ -6,7 +6,7 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import type { monaco } from '@kbn/monaco';
+import type { monaco } from '@kbn/code-editor';
 import type { ValidationError } from '../components/template_yaml_validation_accordion';
 
 interface UseValidationAccordionPositioningReturn {

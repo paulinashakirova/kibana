@@ -10,7 +10,7 @@
 /* eslint-disable max-classes-per-file */
 
 import { toRegExp, toRegExpDetails } from 'oniguruma-to-es';
-import { monaco } from '@kbn/monaco';
+import { monaco } from '@kbn/code-editor';
 import { v4 as uuidv4 } from 'uuid';
 import { unflattenObject } from '@kbn/object-utils';
 import type { EuiThemeComputed } from '@elastic/eui';

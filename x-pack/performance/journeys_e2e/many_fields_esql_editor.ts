@@ -9,7 +9,7 @@ import { Journey } from '@kbn/journeys';
 import { subj } from '@kbn/test-subj-selector';
 import { times } from 'lodash';
 import type { Locator, Page } from 'playwright';
-import type { monaco } from '@kbn/monaco';
+import type { monaco } from '@kbn/code-editor';
 
 interface WithMonacoEnvironment {
   MonacoEnvironment: {

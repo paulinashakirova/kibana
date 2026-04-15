@@ -5,7 +5,7 @@
  * 2.0.
  */
 
-import { ESQL_LANG_ID, monaco } from '@kbn/monaco';
+import { ESQL_LANG_ID, monaco } from '@kbn/code-editor';
 import { useEffect } from 'react';
 import type { EsqlParam } from '../types/tool_form_types';
 

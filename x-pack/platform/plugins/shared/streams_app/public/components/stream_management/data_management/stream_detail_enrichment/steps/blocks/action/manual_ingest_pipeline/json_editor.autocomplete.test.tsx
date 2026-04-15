@@ -8,7 +8,7 @@
 import React from 'react';
 import { render, waitFor } from '@testing-library/react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { monaco } from '@kbn/monaco';
+import { monaco } from '@kbn/code-editor';
 import type { ProcessorSuggestionsResponse } from '@kbn/streams-plugin/common';
 import { I18nProvider } from '@kbn/i18n-react';
 import { JsonEditor } from './json_editor';

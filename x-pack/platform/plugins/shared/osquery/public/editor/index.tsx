@@ -10,7 +10,7 @@ import useDebounce from 'react-use/lib/useDebounce';
 import { useEuiTheme } from '@elastic/eui';
 import { CodeEditor } from '@kbn/code-editor';
 
-import { monaco } from '@kbn/monaco';
+import { monaco } from '@kbn/code-editor';
 
 import { initializeOsqueryEditor } from './osquery_highlight_rules';
 import { useOsqueryTables } from './osquery_tables';

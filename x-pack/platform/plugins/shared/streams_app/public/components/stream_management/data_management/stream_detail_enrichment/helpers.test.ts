@@ -6,7 +6,7 @@
  */
 
 import { shouldSuggestProcessorKey, detectProcessorContext } from './helpers';
-import type { monaco } from '@kbn/monaco';
+import type { monaco } from '@kbn/code-editor';
 
 describe('helpers', () => {
   describe('shouldSuggestProcessorKey', () => {

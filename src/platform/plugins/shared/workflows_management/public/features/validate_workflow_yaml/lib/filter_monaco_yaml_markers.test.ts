@@ -8,7 +8,7 @@
  */
 
 import { parseDocument, Scalar } from 'yaml';
-import type { monaco } from '@kbn/monaco';
+import type { monaco } from '@kbn/code-editor';
 import { filterMonacoYamlMarkers } from './filter_monaco_yaml_markers';
 
 // Mock getScalarValueAtOffset to control what scalar value is found at a given offset

@@ -10,7 +10,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any, complexity */
 
 import type YAML from 'yaml';
-import { monaco } from '@kbn/monaco';
+import { monaco } from '@kbn/code-editor';
 import { SCHEDULED_INTERVAL_ERROR, SCHEDULED_INTERVAL_PATTERN } from '@kbn/workflows';
 import type { z } from '@kbn/zod/v4';
 import { getPathAtOffset } from '../../../../common/lib/yaml';

@@ -14,7 +14,7 @@ import {
   XJsonLang,
   defaultThemesResolvers,
   monaco,
-} from '@kbn/monaco';
+} from '@kbn/code-editor';
 import { useEuiTheme } from '@elastic/eui';
 import { css } from '@emotion/css';
 import { DEFAULT_MARGIN_BOTTOM, getTabContentAvailableHeight } from './get_height';

@@ -7,7 +7,7 @@
 
 import moment from 'moment';
 import { parse } from '@kbn/tinymath';
-import { monaco } from '@kbn/monaco';
+import { monaco } from '@kbn/code-editor';
 import { kqlPluginMock } from '@kbn/kql/public/mocks';
 import { dataViewPluginMocks } from '@kbn/data-views-plugin/public/mocks';
 import { tinymathFunctions } from '@kbn/lens-formula-docs';

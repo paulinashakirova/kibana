@@ -19,7 +19,7 @@ import {
 } from '@elastic/eui';
 import { FormattedMessage } from '@kbn/i18n-react';
 import { i18n } from '@kbn/i18n';
-import type { PainlessContext } from '@kbn/monaco';
+import type { PainlessContext } from '@kbn/code-editor';
 
 import { CodeEditor } from '@kbn/code-editor';
 import { painlessContextOptions } from '../../constants';

@@ -7,7 +7,7 @@
  * License v3.0 only", or the "Server Side Public License, v 1".
  */
 
-import { YAML_LANG_ID, CONSOLE_OUTPUT_LANG_ID } from '@kbn/monaco';
+import { YAML_LANG_ID, CONSOLE_OUTPUT_LANG_ID } from '@kbn/code-editor';
 import { expandLiteralStrings } from '../../../../shared_imports';
 
 export const isJSONContentType = (contentType?: string) =>

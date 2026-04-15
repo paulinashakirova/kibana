@@ -8,7 +8,7 @@
 import React, { useRef } from 'react';
 import { css } from '@emotion/react';
 import { EuiFormRow, EuiLink, EuiAccordion, EuiSpacer, EuiPanel } from '@elastic/eui';
-import type { monaco } from '@kbn/monaco';
+import type { monaco } from '@kbn/code-editor';
 import type { UrlTemplateEditorVariable } from '@kbn/kibana-react-plugin/public';
 import { UrlTemplateEditor } from '@kbn/kibana-react-plugin/public';
 import { url } from '@kbn/kibana-utils-plugin/public';

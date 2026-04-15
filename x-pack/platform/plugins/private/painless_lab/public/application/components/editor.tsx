@@ -6,8 +6,8 @@
  */
 
 import React from 'react';
-import type { PainlessContext } from '@kbn/monaco';
-import { PainlessLang } from '@kbn/monaco';
+import type { PainlessContext } from '@kbn/code-editor';
+import { PainlessLang } from '@kbn/code-editor';
 
 import { CodeEditor } from '@kbn/code-editor';
 

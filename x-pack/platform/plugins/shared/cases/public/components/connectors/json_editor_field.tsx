@@ -8,10 +8,9 @@
 import React, { useCallback, useEffect } from 'react';
 import { EuiFormRow } from '@elastic/eui';
 
-import { XJsonLang } from '@kbn/monaco';
+import { XJsonLang, CodeEditor } from '@kbn/code-editor';
 
 import { XJson } from '@kbn/es-ui-shared-plugin/public';
-import { CodeEditor } from '@kbn/code-editor';
 
 import {
   getFieldValidityAndErrorMessage,

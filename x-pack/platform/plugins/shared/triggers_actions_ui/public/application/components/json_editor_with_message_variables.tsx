@@ -9,8 +9,8 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { EuiFormRow, EuiCallOut, EuiSpacer } from '@elastic/eui';
 
 import { i18n } from '@kbn/i18n';
-import type { monaco } from '@kbn/monaco';
-import { XJsonLang } from '@kbn/monaco';
+import type { monaco } from '@kbn/code-editor';
+import { XJsonLang } from '@kbn/code-editor';
 
 import { XJson } from '@kbn/es-ui-shared-plugin/public';
 import { CodeEditor } from '@kbn/code-editor';

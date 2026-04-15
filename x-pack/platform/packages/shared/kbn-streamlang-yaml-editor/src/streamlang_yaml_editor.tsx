@@ -11,7 +11,7 @@ import type { MonacoYamlOptions } from 'monaco-yaml';
 import { EuiPanel, useEuiTheme } from '@elastic/eui';
 import yaml from 'yaml';
 import { CodeEditor } from '@kbn/code-editor';
-import { monaco } from '@kbn/monaco';
+import { monaco } from '@kbn/code-editor';
 import type { StreamlangYamlEditorProps, StepDecoration } from './types';
 import { useStepDecorations } from './hooks/use_step_decorations';
 import { useGutterSimulationMarkers } from './hooks/use_gutter_simulation_markers';

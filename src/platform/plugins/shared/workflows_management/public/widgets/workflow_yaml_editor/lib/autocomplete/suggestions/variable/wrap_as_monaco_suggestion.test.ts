@@ -8,7 +8,7 @@
  */
 
 import { Scalar } from 'yaml';
-import { monaco } from '@kbn/monaco';
+import { monaco } from '@kbn/code-editor';
 import { wrapAsMonacoSuggestion } from './wrap_as_monaco_suggestion';
 
 const createMockRange = (

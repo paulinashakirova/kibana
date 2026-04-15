@@ -8,7 +8,7 @@
  */
 
 import YAML from 'yaml';
-import { monaco } from '@kbn/monaco';
+import { monaco } from '@kbn/code-editor';
 import {
   findAllSteps,
   findStepAtPosition,

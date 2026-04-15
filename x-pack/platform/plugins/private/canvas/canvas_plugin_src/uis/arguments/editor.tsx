@@ -8,7 +8,7 @@
 import type { FC } from 'react';
 import React, { useState, useEffect, useCallback } from 'react';
 import { EuiFormRow } from '@elastic/eui';
-import type { LangModuleType } from '@kbn/monaco';
+import type { LangModuleType } from '@kbn/code-editor';
 import { CodeEditorField } from '@kbn/code-editor';
 import usePrevious from 'react-use/lib/usePrevious';
 import { templateFromReactComponent } from '../../../public/lib/template_from_react_component';

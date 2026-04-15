@@ -8,7 +8,7 @@
  */
 
 import type { Scalar } from 'yaml';
-import { monaco } from '@kbn/monaco';
+import { monaco } from '@kbn/code-editor';
 import { PROPERTY_PATH_REGEX } from '../../../../../../../common/lib/regex';
 
 export function wrapAsMonacoSuggestion(

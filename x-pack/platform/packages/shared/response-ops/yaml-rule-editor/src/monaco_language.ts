@@ -5,7 +5,7 @@
  * 2.0.
  */
 
-import { ESQL_LANG_ID, ESQLLang, monaco, YamlLang, YAML_LANG_ID } from '@kbn/monaco';
+import { ESQL_LANG_ID, ESQLLang, monaco, YamlLang, YAML_LANG_ID } from '@kbn/code-editor';
 import { DEFAULT_ESQL_PROPERTY_NAMES } from './types';
 
 /**

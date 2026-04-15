@@ -27,7 +27,7 @@ import _ from 'lodash';
 import { FormattedMessage } from '@kbn/i18n-react';
 import { i18n } from '@kbn/i18n';
 import { CodeEditor } from '@kbn/code-editor';
-import { monaco as monacoEditor } from '@kbn/monaco';
+import { monaco as monacoEditor } from '@kbn/code-editor';
 import type { IndexSettingsResponse } from '../../../../../../common';
 import type { Error } from '../../../../../shared_imports';
 import { documentationService, updateIndexSettings } from '../../../../services';

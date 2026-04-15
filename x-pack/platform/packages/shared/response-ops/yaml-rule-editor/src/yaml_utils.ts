@@ -5,7 +5,7 @@
  * 2.0.
  */
 
-import { monaco } from '@kbn/monaco';
+import { monaco } from '@kbn/code-editor';
 import YAML, { LineCounter } from 'yaml';
 import { createRuleDataSchema } from '@kbn/alerting-v2-schemas';
 import type { CompletionContext } from './types';

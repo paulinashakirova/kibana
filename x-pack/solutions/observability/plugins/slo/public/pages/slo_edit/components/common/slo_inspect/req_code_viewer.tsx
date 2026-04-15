@@ -9,7 +9,7 @@
 
 import { EuiButtonEmpty, EuiCopy, EuiFlexGroup, EuiFlexItem, EuiSpacer } from '@elastic/eui';
 import { i18n } from '@kbn/i18n';
-import { XJsonLang } from '@kbn/monaco';
+import { XJsonLang } from '@kbn/code-editor';
 import type { ReactNode } from 'react';
 import React, { useCallback } from 'react';
 import { CodeEditor } from '@kbn/code-editor';

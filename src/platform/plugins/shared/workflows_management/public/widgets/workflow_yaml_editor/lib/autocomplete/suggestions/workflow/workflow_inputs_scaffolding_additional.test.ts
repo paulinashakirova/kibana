@@ -8,7 +8,7 @@
  */
 
 import YAML, { isMap, isPair, isScalar } from 'yaml';
-import { monaco } from '@kbn/monaco';
+import { monaco } from '@kbn/code-editor';
 import {
   buildInsertTextAndEdits,
   checkExistingInputs,

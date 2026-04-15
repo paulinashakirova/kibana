@@ -9,7 +9,7 @@
 
 import type { Document } from 'yaml';
 import { visit } from 'yaml';
-import type { monaco } from '@kbn/monaco';
+import type { monaco } from '@kbn/code-editor';
 import type { WorkflowGraph } from '@kbn/workflows/graph';
 import { VARIABLE_REGEX_GLOBAL } from '../../../../common/lib/regex';
 import { getPathFromAncestors } from '../../../../common/lib/yaml';

@@ -8,7 +8,7 @@
  */
 
 import moment from 'moment-timezone';
-import { monaco } from '@kbn/monaco';
+import { monaco } from '@kbn/code-editor';
 import { getTimezoneSuggestions } from './get_timezone_suggestions';
 
 describe('getTimezoneSuggestions', () => {

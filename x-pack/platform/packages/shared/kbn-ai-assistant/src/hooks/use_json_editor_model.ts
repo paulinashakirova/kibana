@@ -5,7 +5,7 @@
  * 2.0.
  */
 import { useEffect, useMemo, useState } from 'react';
-import { monaco } from '@kbn/monaco';
+import { monaco } from '@kbn/code-editor';
 import { createInitializedObject } from '../utils/create_initialized_object';
 import { safeJsonParse } from '../utils/safe_json_parse';
 import { useFunctions } from './use_functions';

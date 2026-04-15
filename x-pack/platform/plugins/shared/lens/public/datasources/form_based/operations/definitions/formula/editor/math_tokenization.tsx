@@ -5,7 +5,7 @@
  * 2.0.
  */
 
-import { monaco } from '@kbn/monaco';
+import { monaco } from '@kbn/code-editor';
 
 export const LANGUAGE_ID = 'lens_math';
 monaco.languages.register({ id: LANGUAGE_ID });

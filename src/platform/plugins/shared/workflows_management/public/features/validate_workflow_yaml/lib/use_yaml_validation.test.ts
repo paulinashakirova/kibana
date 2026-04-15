@@ -10,7 +10,7 @@
 import { renderHook, waitFor } from '@testing-library/react';
 import React from 'react';
 import { Provider } from 'react-redux';
-import { monaco } from '@kbn/monaco';
+import { monaco } from '@kbn/code-editor';
 import { useYamlValidation } from './use_yaml_validation';
 import { selectDetail } from '../../../entities/workflows/store';
 import { createWorkflowsStore } from '../../../entities/workflows/store/store';

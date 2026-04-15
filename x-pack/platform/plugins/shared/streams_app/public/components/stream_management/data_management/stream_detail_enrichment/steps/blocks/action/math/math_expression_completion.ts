@@ -5,7 +5,7 @@
  * 2.0.
  */
 
-import { monaco } from '@kbn/monaco';
+import { monaco } from '@kbn/code-editor';
 import {
   ALL_MATH_FUNCTIONS,
   getMathFunctionDefinition,

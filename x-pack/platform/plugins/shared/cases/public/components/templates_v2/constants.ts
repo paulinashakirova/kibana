@@ -5,7 +5,7 @@
  * 2.0.
  */
 
-import type { monaco } from '@kbn/monaco';
+import type { monaco } from '@kbn/code-editor';
 import type { TemplatesFindRequest } from '../../../common/types/api/template/v1';
 
 export const PAGE_SIZE_OPTIONS: number[] = [10, 25, 50, 100];
