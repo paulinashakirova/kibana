@@ -36,7 +36,6 @@
     "@kbn/es-query",
     "@kbn/data-views-plugin",
     "@kbn/std",
-    "@kbn/monaco",
     "@kbn/utility-types",
     "@kbn/core-logging-server-mocks",
     "@kbn/securitysolution-es-utils",

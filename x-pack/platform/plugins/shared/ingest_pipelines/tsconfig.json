@@ -25,7 +25,6 @@
     "@kbn/i18n",
     "@kbn/i18n-react",
     "@kbn/analytics",
-    "@kbn/monaco",
     "@kbn/config-schema",
     "@kbn/shared-ux-router",
     "@kbn/core-ui-settings-browser",

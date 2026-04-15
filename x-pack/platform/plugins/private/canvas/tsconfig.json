@@ -50,7 +50,6 @@
     "@kbn/utility-types",
     "@kbn/datemath",
     "@kbn/field-formats-plugin",
-    "@kbn/monaco",
     "@kbn/i18n-react",
     "@kbn/i18n",
     "@kbn/data-views-plugin",

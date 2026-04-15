@@ -18,7 +18,6 @@
   ],
   "kbn_references": [
     "@kbn/i18n",
-    "@kbn/monaco",
     "@kbn/streamlang",
     "@kbn/react-hooks",
     "@kbn/code-editor",

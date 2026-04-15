@@ -44,7 +44,6 @@
     "@kbn/esql-utils",
     "@kbn/esql",
     "@kbn/field-types",
-    "@kbn/monaco",
     "@kbn/safer-lodash-set",
     "@kbn/core-http-server-mocks",
     "@kbn/cloud-plugin",
@@ -110,6 +109,7 @@
     "@kbn/search-inference-endpoints",
     "@kbn/response-ops-oauth-hooks",
     "@kbn/connector-specs",
-    "@kbn/core-user-profile-browser"
+    "@kbn/core-user-profile-browser",
+    "@kbn/code-editor"
   ]
 }

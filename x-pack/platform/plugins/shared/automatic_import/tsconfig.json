@@ -58,7 +58,6 @@
     "@kbn/kibana-utils-plugin",
     "@kbn/ingest-pipelines-plugin",
     "@kbn/code-editor",
-    "@kbn/monaco",
     "@kbn/scout",
     "@kbn/core-analytics-browser",
   ]

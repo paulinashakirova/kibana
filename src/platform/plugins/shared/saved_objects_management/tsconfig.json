@@ -17,7 +17,6 @@
     "@kbn/utility-types",
     "@kbn/i18n-react",
     "@kbn/test-jest-helpers",
-    "@kbn/monaco",
     "@kbn/config-schema",
     "@kbn/core-custom-branding-browser-mocks",
     "@kbn/core-custom-branding-browser",

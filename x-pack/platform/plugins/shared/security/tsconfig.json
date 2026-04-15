@@ -37,7 +37,6 @@
     "@kbn/core-test-helpers-http-setup-browser",
     "@kbn/shared-ux-page-kibana-template",
     "@kbn/core-http-browser",
-    "@kbn/monaco",
     "@kbn/std",
     "@kbn/config",
     "@kbn/config-schema",

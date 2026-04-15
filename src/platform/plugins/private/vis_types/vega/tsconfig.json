@@ -31,7 +31,6 @@
     "@kbn/core-execution-context-common",
     "@kbn/i18n",
     "@kbn/i18n-react",
-    "@kbn/monaco",
     "@kbn/utility-types",
     "@kbn/ui-theme",
     "@kbn/std",

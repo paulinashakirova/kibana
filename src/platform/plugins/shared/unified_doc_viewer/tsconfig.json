@@ -13,7 +13,6 @@
   ],
   "kbn_references": [
     "@kbn/kibana-react-plugin",
-    "@kbn/monaco",
     "@kbn/data-views-plugin",
     "@kbn/test-jest-helpers",
     "@kbn/discover-utils",
