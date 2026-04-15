@@ -9,7 +9,7 @@
 
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import type { ESQLCallbacks, ESQLTelemetryCallbacks } from '@kbn/esql-types';
-import type { monaco } from '@kbn/monaco';
+import { monaco } from '@kbn/monaco';
 import { ESQLLang, ESQL_LANG_ID } from '@kbn/monaco';
 import type { MonacoMessage } from '@kbn/monaco/src/languages/esql/language';
 import type { CodeEditorProps } from '@kbn/code-editor';
@@ -169,7 +169,7 @@ export const useEditorConfig = ({
       fontSize: 14,
       hideCursorInOverviewRuler: true,
       lightbulb: {
-        enabled: false,
+        enabled: monaco.editor.ShowLightbulbIconMode.Off,
       },
       lineDecorationsWidth: 20,
       lineNumbers: 'on',
