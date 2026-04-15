@@ -148,6 +148,7 @@ module.exports = {
         {
           from: '@kbn/monaco',
           to: '@kbn/code-editor',
+          exact: true,
           exclude: [/shared-ux[\/\\]code_editor[\/\\]/],
         },
         {
