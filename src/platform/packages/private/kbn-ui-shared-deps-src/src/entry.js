@@ -39,7 +39,8 @@ export const IoTsThrowReporter = require('io-ts/ThrowReporter');
 export const Zod = require('zod/v4');
 
 export const KbnMonaco = require('@kbn/code-editor');
-export const MonacoBarePluginApi = require('@kbn/code-editor').BarePluginApi;
+// eslint-disable-next-line @kbn/eslint/module_migration
+export const MonacoBarePluginApi = require('@kbn/monaco').BarePluginApi;
 export const React = require('react');
 export const ReactDom = require('react-dom');
 export const ReactDomServer = require('react-dom/server');

@@ -9,8 +9,7 @@
 
 import type { CSSProperties } from 'react';
 import { debounce } from 'lodash';
-import { monaco } from '@kbn/code-editor';
-import { createOutputParser } from '@kbn/code-editor/src/languages/console/output_parser';
+import { monaco, createOutputParser } from '@kbn/code-editor';
 
 import { getRequestEndLineNumber, getRequestStartLineNumber } from './utils';
 

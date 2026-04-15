@@ -48,7 +48,7 @@ import type { ISearchGeneric } from '@kbn/search-types';
 import { useKibana } from '@kbn/kibana-react-plugin/public';
 import type { ILicense } from '@kbn/licensing-types';
 import { ESQLLang, ESQL_LANG_ID, monaco } from '@kbn/code-editor';
-import type { MonacoMessage } from '@kbn/code-editor/src/languages/esql/language';
+import type { MonacoMessage } from '@kbn/code-editor';
 import { DataSourceBrowser } from '@kbn/esql-resource-browser';
 import { FieldsBrowser } from '@kbn/esql-resource-browser';
 import type { ComponentProps } from 'react';

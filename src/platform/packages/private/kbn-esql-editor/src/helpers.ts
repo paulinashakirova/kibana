@@ -15,7 +15,7 @@ import { monaco } from '@kbn/code-editor';
 import { uniqBy, type MapCache } from 'lodash';
 import { useRef } from 'react';
 import useDebounce from 'react-use/lib/useDebounce';
-import type { MonacoMessage } from '@kbn/code-editor/src/languages/esql/language';
+import type { MonacoMessage } from '@kbn/code-editor';
 import {
   EDITOR_MAX_HEIGHT,
   EDITOR_MIN_HEIGHT,

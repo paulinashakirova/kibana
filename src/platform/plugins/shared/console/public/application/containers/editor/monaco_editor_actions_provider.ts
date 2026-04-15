@@ -9,13 +9,15 @@
 
 import type { CSSProperties, Dispatch } from 'react';
 import { debounce, range } from 'lodash';
-import type { ConsoleParsedRequestsProvider } from '@kbn/code-editor';
-import { getParsedRequestsProvider, monaco } from '@kbn/code-editor';
+import type { ConsoleParsedRequestsProvider, ErrorAnnotation } from '@kbn/code-editor';
+import {
+  getParsedRequestsProvider,
+  monaco,
+  checkForTripleQuotesAndEsqlQuery,
+} from '@kbn/code-editor';
 import { i18n } from '@kbn/i18n';
 import { toMountPoint } from '@kbn/react-kibana-mount';
 import { XJson } from '@kbn/es-ui-shared-plugin/public';
-import type { ErrorAnnotation } from '@kbn/code-editor/src/languages/console/types';
-import { checkForTripleQuotesAndEsqlQuery } from '@kbn/code-editor/src/languages/console/utils';
 import { isQuotaExceededError } from '../../../services/history';
 import { DEFAULT_VARIABLES, KIBANA_API_PREFIX } from '../../../../common/constants';
 import { getStorage, StorageKeys } from '../../../services';

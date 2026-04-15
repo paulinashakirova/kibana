@@ -37,3 +37,5 @@ export { ConsoleParsedRequestsProvider } from './console_parsed_requests_provide
 export { ConsoleWorkerProxyService } from './console_worker_proxy';
 
 export { createOutputParser } from './output_parser';
+export { createParser } from './parser';
+export { checkForTripleQuotesAndEsqlQuery } from './utils';

@@ -19,13 +19,26 @@ import { css } from '@emotion/react';
 import type { CodeEditorProps } from './code_editor';
 export type { CodeEditorProps } from './code_editor';
 export { monaco } from '@kbn/monaco';
-export * from './react_monaco_editor/languages/supported';
 
 export {
   // editor themes
   CODE_EDITOR_DEFAULT_THEME_ID,
   CODE_EDITOR_TRANSPARENT_THEME_ID,
   defaultThemesResolvers,
+  // language IDs
+  CSS_LANG_ID,
+  HANDLEBARS_LANG_ID,
+  MARKDOWN_LANG_ID,
+  YAML_LANG_ID,
+  HJSON_LANG_ID,
+  GROK_LANG_ID,
+  XJSON_LANG_ID,
+  PAINLESS_LANG_ID,
+  SQL_LANG_ID,
+  ESQL_LANG_ID,
+  CONSOLE_LANG_ID,
+  CONSOLE_OUTPUT_LANG_ID,
+  PROMQL_LANG_ID,
   // language definitions
   XJsonLang,
   PainlessLang,
@@ -51,6 +64,8 @@ export {
   ConsoleParsedRequestsProvider,
   ConsoleWorkerProxyService,
   createOutputParser,
+  createParser,
+  checkForTripleQuotesAndEsqlQuery,
   // yaml
   configureMonacoYamlSchema,
   // painless
@@ -76,6 +91,7 @@ export type {
   UndoRedoElement,
   // esql
   ESQLDependencies,
+  MonacoMessage,
   // console
   ConsoleOutputParser,
   ConsoleParserResult,

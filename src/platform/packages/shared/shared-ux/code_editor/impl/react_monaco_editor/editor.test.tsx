@@ -16,7 +16,21 @@ import {
 } from '@kbn/monaco';
 import { render, screen, waitFor } from '@testing-library/react';
 import { MonacoEditor, OVERFLOW_WIDGETS_TEST_ID } from './editor';
-import * as supportedLanguages from './languages/supported';
+import {
+  CSS_LANG_ID,
+  HANDLEBARS_LANG_ID,
+  MARKDOWN_LANG_ID,
+  YAML_LANG_ID,
+  HJSON_LANG_ID,
+  GROK_LANG_ID,
+  XJSON_LANG_ID,
+  PAINLESS_LANG_ID,
+  SQL_LANG_ID,
+  ESQL_LANG_ID,
+  CONSOLE_LANG_ID,
+  CONSOLE_OUTPUT_LANG_ID,
+  PROMQL_LANG_ID,
+} from '@kbn/monaco';
 
 const defaultProps: Partial<ComponentProps<typeof MonacoEditor>> = {
   options: {},
@@ -124,7 +138,21 @@ describe('react monaco editor', () => {
 
     const configuredLanguages = window.MonacoEnvironment?.monaco.languages.getLanguages();
 
-    Object.values(supportedLanguages).forEach((v) => {
+    [
+      CSS_LANG_ID,
+      HANDLEBARS_LANG_ID,
+      MARKDOWN_LANG_ID,
+      YAML_LANG_ID,
+      HJSON_LANG_ID,
+      GROK_LANG_ID,
+      XJSON_LANG_ID,
+      PAINLESS_LANG_ID,
+      SQL_LANG_ID,
+      ESQL_LANG_ID,
+      CONSOLE_LANG_ID,
+      CONSOLE_OUTPUT_LANG_ID,
+      PROMQL_LANG_ID,
+    ].forEach((v) => {
       expect(configuredLanguages?.some((l) => l?.id === v)).toBe(true);
     });
   });

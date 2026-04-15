@@ -7,7 +7,7 @@
  * License v3.0 only", or the "Server Side Public License, v 1".
  */
 
-import { monaco } from '@kbn/code-editor/src/monaco_imports';
+import { monaco } from '@kbn/code-editor';
 import { createFakeMonacoModel } from './monaco_model';
 
 describe('createMockModel', () => {
