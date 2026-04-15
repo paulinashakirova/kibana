@@ -41,7 +41,7 @@ dependsOn:
   - '@kbn/core-saved-objects-server-internal'
   - '@kbn/core-saved-objects-api-server'
   - '@kbn/core-saved-objects-server'
-  - '@kbn/code-editor'
+  - '@kbn/monaco'
 tags:
   - shared-server
   - package
