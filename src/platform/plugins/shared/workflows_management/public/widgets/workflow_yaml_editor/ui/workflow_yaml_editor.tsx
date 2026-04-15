@@ -17,6 +17,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import type YAML from 'yaml';
 import { FormattedMessage } from '@kbn/i18n-react';
 import { monaco, YAML_LANG_ID } from '@kbn/monaco';
+import { AiButton } from '@kbn/shared-ux-ai-components';
 import { isTriggerType } from '@kbn/workflows';
 import type { z } from '@kbn/zod/v4';
 import { ActionsMenuButton } from './actions_menu_button';
@@ -705,9 +706,7 @@ export const WorkflowYAMLEditor = ({
         <StepActions onStepRun={onStepRun} />
       </div>
       {(isAgentBuilderAvailable || isDevelopment) && !isExecutionYaml && (
-        <div
-          css={{ position: 'absolute', top: euiTheme.size.xxs, right: euiTheme.size.m, zIndex: 10 }}
-        >
+        <div css={styles.agentBuilderSectionCss}>
           <EuiFlexGroup gutterSize="s" alignItems="center" responsive={false}>
             {isAgentBuilderAvailable && (
               <EuiFlexItem grow={false}>
@@ -760,7 +759,7 @@ export const WorkflowYAMLEditor = ({
             )}
           </EuiFlexGroup>
         </div>
-      ) : null}
+      )}
       <div
         css={styles.editorContainer}
         className={classnames({ [EXECUTION_YAML_SNAPSHOT_CLASS]: isExecutionYaml })}
@@ -790,71 +789,3 @@ export const WorkflowYAMLEditor = ({
     </div>
   );
 };
-
-const WorkflowYamlEditorAssistActions = React.memo(function WorkflowYamlEditorAssistActions({
-  isAgentBuilderAvailable,
-  isDevelopment,
-  workflowJsonSchema,
-  onOpenAgentChat,
-  onDownloadSchema,
-}: {
-  isAgentBuilderAvailable: boolean;
-  isDevelopment: boolean;
-  workflowJsonSchema: SchemasSettings['schema'] | null;
-  onOpenAgentChat: () => void;
-  onDownloadSchema: () => void;
-}) {
-  const styles = useWorkflowEditorStyles();
-  return (
-    <EuiFlexGroup gutterSize="s" alignItems="center" responsive={false}>
-      {isAgentBuilderAvailable && (
-        <EuiFlexItem grow={false}>
-          <EuiToolTip
-            content={
-              <FormattedMessage
-                id="workflows.yamlEditor.aiAgentTooltip"
-                defaultMessage="Ask AI to help edit this workflow"
-              />
-            }
-          >
-            <EuiButtonEmpty
-              iconType="sparkles"
-              size="xs"
-              aria-label="Open AI Agent"
-              onClick={onOpenAgentChat}
-              data-test-subj="workflowYamlEditorAiAgentButton"
-            >
-              <FormattedMessage
-                id="workflows.yamlEditor.aiAgentButtonLabel"
-                defaultMessage="AI Agent"
-              />
-            </EuiButtonEmpty>
-          </EuiToolTip>
-        </EuiFlexItem>
-      )}
-      {isDevelopment && (
-        <EuiFlexItem grow={false}>
-          <EuiButtonEmpty
-            css={styles.downloadSchemaButton}
-            iconType={workflowJsonSchema === null ? 'warning' : 'download'}
-            size="xs"
-            aria-label="Download JSON schema for debugging"
-            onClick={onDownloadSchema}
-            tabIndex={0}
-            disabled={workflowJsonSchema === null}
-            onKeyDown={(e: React.KeyboardEvent<HTMLButtonElement>) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.currentTarget.click();
-              }
-            }}
-          >
-            <FormattedMessage
-              id="workflows.yamlEditor.downloadSchemaButtonLabel"
-              defaultMessage="JSON Schema"
-            />
-          </EuiButtonEmpty>
-        </EuiFlexItem>
-      )}
-    </EuiFlexGroup>
-  );
-});
