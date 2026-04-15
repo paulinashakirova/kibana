@@ -18,7 +18,6 @@ project:
   sourceRoot: x-pack/platform/packages/shared/kbn-streamlang-yaml-editor
 dependsOn:
   - '@kbn/i18n'
-  - '@kbn/monaco'
   - '@kbn/streamlang'
   - '@kbn/react-hooks'
   - '@kbn/code-editor'

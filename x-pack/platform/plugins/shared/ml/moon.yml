@@ -92,7 +92,6 @@ dependsOn:
   - '@kbn/ml-ui-actions'
   - '@kbn/ml-url-state'
   - '@kbn/ml-validators'
-  - '@kbn/monaco'
   - '@kbn/observability-ai-assistant-plugin'
   - '@kbn/presentation-publishing'
   - '@kbn/presentation-util-plugin'

@@ -28,7 +28,6 @@ dependsOn:
   - '@kbn/std'
   - '@kbn/utility-types-jest'
   - '@kbn/kibana-react-plugin'
-  - '@kbn/monaco'
   - '@kbn/licensing-plugin'
   - '@kbn/code-editor'
   - '@kbn/ml-plugin'

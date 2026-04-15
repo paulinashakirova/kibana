@@ -35,7 +35,6 @@ dependsOn:
   - '@kbn/utility-types'
   - '@kbn/analytics'
   - '@kbn/datemath'
-  - '@kbn/monaco'
   - '@kbn/field-types'
   - '@kbn/react-field'
   - '@kbn/ui-theme'

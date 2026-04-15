@@ -31,7 +31,6 @@ dependsOn:
   - '@kbn/react-kibana-context-render'
   - '@kbn/code-editor'
   - '@kbn/code-editor-mock'
-  - '@kbn/monaco'
   - '@kbn/css-utils'
   - '@kbn/licensing-types'
 tags:

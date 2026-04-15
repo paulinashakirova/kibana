@@ -86,7 +86,6 @@ dependsOn:
   - '@kbn/core-http-server-mocks'
   - '@kbn/core-http-server-utils'
   - '@kbn/code-editor-mock'
-  - '@kbn/monaco'
   - '@kbn/code-editor'
   - '@kbn/logging'
   - '@kbn/core-test-helpers-model-versions'

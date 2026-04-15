@@ -36,7 +36,6 @@ dependsOn:
   - '@kbn/core'
   - '@kbn/ui-actions-plugin'
   - '@kbn/kibana-react-plugin'
-  - '@kbn/monaco'
   - '@kbn/code-editor'
   - '@kbn/config'
   - '@kbn/monaco'

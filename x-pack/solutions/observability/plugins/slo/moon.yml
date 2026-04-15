@@ -93,7 +93,6 @@ dependsOn:
   - '@kbn/core-elasticsearch-server-mocks'
   - '@kbn/datemath'
   - '@kbn/dashboard-plugin'
-  - '@kbn/monaco'
   - '@kbn/code-editor'
   - '@kbn/react-kibana-context-render'
   - '@kbn/core-application-browser'

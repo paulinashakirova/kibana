@@ -59,7 +59,6 @@ dependsOn:
   - '@kbn/mapbox-gl'
   - '@kbn/core-execution-context-common'
   - '@kbn/chart-icons'
-  - '@kbn/monaco'
   - '@kbn/safer-lodash-set'
   - '@kbn/custom-integrations-plugin'
   - '@kbn/config-schema'

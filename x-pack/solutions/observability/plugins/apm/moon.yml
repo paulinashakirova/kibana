@@ -96,7 +96,6 @@ dependsOn:
   - '@kbn/metrics-data-access-plugin'
   - '@kbn/profiling-data-access-plugin'
   - '@kbn/profiling-utils'
-  - '@kbn/monaco'
   - '@kbn/deeplinks-observability'
   - '@kbn/custom-icons'
   - '@kbn/elastic-agent-utils'

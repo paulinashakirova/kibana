@@ -26,11 +26,11 @@ dependsOn:
   - '@kbn/synthtrace-client'
   - '@kbn/test-suites-src'
   - '@kbn/ftr-common-functional-services'
-  - '@kbn/monaco'
   - '@kbn/streams-plugin'
   - '@kbn/content-packs-schema'
   - '@kbn/streams-schema'
   - '@kbn/streamlang'
+  - '@kbn/code-editor'
 tags:
   - test-helper
   - package

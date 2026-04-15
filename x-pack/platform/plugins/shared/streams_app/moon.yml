@@ -72,7 +72,6 @@ dependsOn:
   - '@kbn/scout'
   - '@kbn/scout-synthtrace'
   - '@kbn/unified-doc-viewer'
-  - '@kbn/monaco'
   - '@kbn/unified-doc-viewer-plugin'
   - '@kbn/utility-types'
   - '@kbn/synthtrace-client'

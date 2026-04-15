@@ -25,7 +25,6 @@ dependsOn:
   - '@kbn/ui-actions-plugin'
   - '@kbn/i18n'
   - '@kbn/es-query'
-  - '@kbn/monaco'
   - '@kbn/std'
   - '@kbn/core-ui-settings-browser'
   - '@kbn/presentation-publishing'
@@ -33,6 +32,7 @@ dependsOn:
   - '@kbn/handlebars'
   - '@kbn/rison'
   - '@kbn/datemath'
+  - '@kbn/code-editor'
 tags:
   - plugin
   - prod

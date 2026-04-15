@@ -23,7 +23,6 @@ dependsOn:
   - '@kbn/i18n'
   - '@kbn/test-jest-helpers'
   - '@kbn/i18n-react'
-  - '@kbn/monaco'
   - '@kbn/core-ui-settings-browser-mocks'
   - '@kbn/core-ui-settings-browser'
   - '@kbn/std'

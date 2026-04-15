@@ -32,7 +32,6 @@ dependsOn:
   - '@kbn/field-formats-plugin'
   - '@kbn/data-views-plugin'
   - '@kbn/i18n-react'
-  - '@kbn/monaco'
   - '@kbn/field-types'
   - '@kbn/es-query'
   - '@kbn/std'

@@ -19,7 +19,6 @@ project:
 dependsOn:
   - '@kbn/management-settings-types'
   - '@kbn/management-settings-field-definition'
-  - '@kbn/monaco'
   - '@kbn/management-settings-utilities'
   - '@kbn/i18n-react'
   - '@kbn/i18n'

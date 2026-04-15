@@ -18,7 +18,6 @@ project:
   sourceRoot: src/platform/plugins/shared/unified_doc_viewer
 dependsOn:
   - '@kbn/kibana-react-plugin'
-  - '@kbn/monaco'
   - '@kbn/data-views-plugin'
   - '@kbn/test-jest-helpers'
   - '@kbn/discover-utils'

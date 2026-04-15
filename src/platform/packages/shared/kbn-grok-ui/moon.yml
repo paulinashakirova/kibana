@@ -17,7 +17,6 @@ project:
   owner: '@elastic/obs-onboarding-team'
   sourceRoot: src/platform/packages/shared/kbn-grok-ui
 dependsOn:
-  - '@kbn/monaco'
   - '@kbn/dev-cli-runner'
   - '@kbn/repo-info'
   - '@kbn/code-editor'

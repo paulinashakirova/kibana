@@ -18,7 +18,7 @@ project:
   sourceRoot: src/platform/packages/shared/kbn-react-hooks
 dependsOn:
   - '@kbn/std'
-  - '@kbn/monaco'
+  - '@kbn/code-editor'
 tags:
   - shared-common
   - package

@@ -32,7 +32,6 @@ dependsOn:
   - '@kbn/es-query'
   - '@kbn/analytics'
   - '@kbn/i18n-react'
-  - '@kbn/monaco'
   - '@kbn/config-schema'
   - '@kbn/expect'
   - '@kbn/std'

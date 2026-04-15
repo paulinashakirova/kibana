@@ -42,7 +42,6 @@ dependsOn:
   - '@kbn/rule-data-utils'
   - '@kbn/test-jest-helpers'
   - '@kbn/es-ui-shared-plugin'
-  - '@kbn/monaco'
   - '@kbn/core-http-browser'
   - '@kbn/core-notifications-browser'
   - '@kbn/core-doc-links-browser'
