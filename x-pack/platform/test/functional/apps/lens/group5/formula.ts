@@ -315,9 +315,7 @@ export default function ({ getService, getPageObjects }: FtrProviderContext) {
       });
 
       // now change the formula to add an inner filter to count
-      await lens.typeFormula('');
-      await lens.simulateTypingInFormula(`count(kql=bytes > 600000`);
-      // the autocomplete will add quotes and closing brackets, so do not worry about that
+      await lens.typeFormula(`count(kql='bytes > 600000')`);
 
       await lens.waitForVisualization();
       expect(await lens.getDatatableCellText(0, 0)).to.eql('0');

@@ -516,8 +516,8 @@ export class ConsolePageObject extends FtrService {
   }
 
   public async changeLanguageAndCopy(language: string) {
-    const openModalButton = await this.testSubjects.find('changeLanguageButton');
-    await openModalButton.click();
+    // Open the language selector modal from the context menu
+    await this.testSubjects.click('consoleMenuSelectLanguage');
 
     const changeLangButton = await this.testSubjects.find(`languageOption-${language}`);
     await changeLangButton.click();
@@ -527,14 +527,16 @@ export class ConsolePageObject extends FtrService {
   }
 
   public async changeDefaultLanguage(language: string) {
-    const openModalButton = await this.testSubjects.find('changeLanguageButton');
-    await openModalButton.click();
+    // Open the language selector modal from the context menu
+    await this.testSubjects.click('consoleMenuSelectLanguage');
 
-    const changeDefaultLangButton = await this.testSubjects.find(
-      `changeDefaultLanguageTo-${language}`
-    );
-    await changeDefaultLangButton.click();
+    const changeLangButton = await this.testSubjects.find(`languageOption-${language}`);
+    await changeLangButton.click();
 
+    // Mark the selected language as the new default
+    await this.testSubjects.click('setAsDefaultLanguage');
+
+    // Close the modal — this persists the new default to storage
     const closeModalButton = await this.testSubjects.find('closeCopyAsModal');
     await closeModalButton.click();
   }
