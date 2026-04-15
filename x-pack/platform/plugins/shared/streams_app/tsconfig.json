@@ -13,10 +13,7 @@
     ".storybook/**/*",
     "test/scout/**/*"
   ],
-  "exclude": [
-    "target/**/*",
-    ".storybook/**/*.js"
-  ],
+  "exclude": ["target/**/*", ".storybook/**/*.js"],
   "kbn_references": [
     "@kbn/core",
     "@kbn/data-plugin",
@@ -116,7 +113,6 @@
     "@kbn/shared-ux-ai-components",
     "@kbn/deeplinks-management",
     "@kbn/core-http-browser",
-    "@kbn/core-ui-settings-browser",
-    "@kbn/inference-connectors",
+    "@kbn/core-ui-settings-browser"
   ]
 }

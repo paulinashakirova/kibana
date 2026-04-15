@@ -116,7 +116,6 @@ dependsOn:
   - '@kbn/deeplinks-management'
   - '@kbn/core-http-browser'
   - '@kbn/core-ui-settings-browser'
-  - '@kbn/inference-connectors'
 tags:
   - plugin
   - prod

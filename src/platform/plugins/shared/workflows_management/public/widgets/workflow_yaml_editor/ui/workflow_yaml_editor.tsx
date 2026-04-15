@@ -818,9 +818,10 @@ const WorkflowYamlEditorAssistActions = React.memo(function WorkflowYamlEditorAs
               />
             }
           >
-            <EuiButtonEmpty
+            <AiButton
               iconType="sparkles"
               size="xs"
+              variant="empty"
               aria-label="Open AI Agent"
               onClick={onOpenAgentChat}
               data-test-subj="workflowYamlEditorAiAgentButton"
@@ -829,7 +830,7 @@ const WorkflowYamlEditorAssistActions = React.memo(function WorkflowYamlEditorAs
                 id="workflows.yamlEditor.aiAgentButtonLabel"
                 defaultMessage="AI Agent"
               />
-            </EuiButtonEmpty>
+            </AiButton>
           </EuiToolTip>
         </EuiFlexItem>
       )}
