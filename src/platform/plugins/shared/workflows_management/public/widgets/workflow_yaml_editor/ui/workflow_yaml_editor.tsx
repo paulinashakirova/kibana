@@ -17,7 +17,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import type YAML from 'yaml';
 import { FormattedMessage } from '@kbn/i18n-react';
 import { monaco, YAML_LANG_ID } from '@kbn/monaco';
-import { AiButton } from '@kbn/shared-ux-ai-components';
 import { isTriggerType } from '@kbn/workflows';
 import type { z } from '@kbn/zod/v4';
 import { ActionsMenuButton } from './actions_menu_button';
@@ -818,10 +817,9 @@ const WorkflowYamlEditorAssistActions = React.memo(function WorkflowYamlEditorAs
               />
             }
           >
-            <AiButton
+            <EuiButtonEmpty
               iconType="sparkles"
               size="xs"
-              variant="empty"
               aria-label="Open AI Agent"
               onClick={onOpenAgentChat}
               data-test-subj="workflowYamlEditorAiAgentButton"
@@ -830,7 +828,7 @@ const WorkflowYamlEditorAssistActions = React.memo(function WorkflowYamlEditorAs
                 id="workflows.yamlEditor.aiAgentButtonLabel"
                 defaultMessage="AI Agent"
               />
-            </AiButton>
+            </EuiButtonEmpty>
           </EuiToolTip>
         </EuiFlexItem>
       )}
