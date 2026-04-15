@@ -56,17 +56,11 @@ export class ConsolePageObject extends FtrService {
   }
 
   public async scrollOutputToTop() {
-    const outputEditor = await this.testSubjects.find('consoleMonacoOutput');
-    const textArea = await outputEditor.findByTagName('textarea');
-    const selectionKey = Key[process.platform === 'darwin' ? 'COMMAND' : 'CONTROL'];
-    await textArea.pressKeys([selectionKey, Key.HOME]);
+    await this.monacoEditor.simulateKeyCommand('consoleMonacoOutput', 'cursorTop');
   }
 
   public async selectAllOutputText() {
-    const outputEditor = await this.testSubjects.find('consoleMonacoOutput');
-    const textArea = await outputEditor.findByTagName('textarea');
-    const selectionKey = Key[process.platform === 'darwin' ? 'COMMAND' : 'CONTROL'];
-    await textArea.pressKeys([selectionKey, 'a']);
+    await this.monacoEditor.simulateKeyCommand('consoleMonacoOutput', 'selectAll');
   }
 
   public async getOutputText() {
@@ -153,70 +147,62 @@ export class ConsolePageObject extends FtrService {
   }
 
   public async pressUp(shift: boolean = false) {
-    const textArea = await this.getTextArea();
-    await textArea.pressKeys(shift ? [Key.SHIFT, Key.UP] : Key.UP);
+    await this.monacoEditor.simulateKeyCommand(
+      'consoleMonacoEditor',
+      shift ? 'cursorUpSelect' : 'cursorUp'
+    );
   }
 
   public async pressDown(shift: boolean = false) {
-    const textArea = await this.getTextArea();
-    await textArea.pressKeys(shift ? [Key.SHIFT, Key.DOWN] : Key.DOWN);
+    await this.monacoEditor.simulateKeyCommand(
+      'consoleMonacoEditor',
+      shift ? 'cursorDownSelect' : 'cursorDown'
+    );
   }
 
   public async pressRight(shift: boolean = false) {
-    const textArea = await this.getTextArea();
-    await textArea.pressKeys(shift ? [Key.SHIFT, Key.RIGHT] : Key.RIGHT);
+    await this.monacoEditor.simulateKeyCommand(
+      'consoleMonacoEditor',
+      shift ? 'cursorRightSelect' : 'cursorRight'
+    );
   }
 
   public async pressLeft(shift: boolean = false) {
-    const textArea = await this.getTextArea();
-    await textArea.pressKeys(shift ? [Key.SHIFT, Key.LEFT] : Key.LEFT);
+    await this.monacoEditor.simulateKeyCommand(
+      'consoleMonacoEditor',
+      shift ? 'cursorLeftSelect' : 'cursorLeft'
+    );
   }
 
   public async pressCtrlSpace() {
-    const textArea = await this.getTextArea();
-    await textArea.pressKeys([
-      Key[process.platform === 'darwin' ? 'COMMAND' : 'CONTROL'],
-      Key.SPACE,
-    ]);
+    await this.triggerSuggest();
   }
+
   public async pressCtrlEnter() {
-    const textArea = await this.getTextArea();
-    await textArea.pressKeys([
-      Key[process.platform === 'darwin' ? 'COMMAND' : 'CONTROL'],
-      Key.ENTER,
-    ]);
+    await this.monacoEditor.simulateKeyCommand('consoleMonacoEditor', 'sendRequest');
   }
 
   public async pressCtrlI() {
-    const textArea = await this.getTextArea();
-    await textArea.pressKeys([Key[process.platform === 'darwin' ? 'COMMAND' : 'CONTROL'], 'i']);
+    await this.monacoEditor.simulateKeyCommand('consoleMonacoEditor', 'autoIndent');
   }
 
   public async pressCtrlUp() {
-    const textArea = await this.getTextArea();
-    await textArea.pressKeys([Key[process.platform === 'darwin' ? 'COMMAND' : 'CONTROL'], Key.UP]);
+    await this.monacoEditor.simulateKeyCommand('consoleMonacoEditor', 'moveUp');
   }
 
   public async pressCtrlDown() {
-    const textArea = await this.getTextArea();
-    await textArea.pressKeys([
-      Key[process.platform === 'darwin' ? 'COMMAND' : 'CONTROL'],
-      Key.DOWN,
-    ]);
+    await this.monacoEditor.simulateKeyCommand('consoleMonacoEditor', 'moveDown');
   }
 
   public async pressCtrlL() {
-    const textArea = await this.getTextArea();
-    await textArea.pressKeys([Key[process.platform === 'darwin' ? 'COMMAND' : 'CONTROL'], 'l']);
+    await this.monacoEditor.simulateKeyCommand('consoleMonacoEditor', 'moveToLine');
   }
 
   public async pressCtrlSlash() {
-    const textArea = await this.getTextArea();
-    await textArea.pressKeys([Key[process.platform === 'darwin' ? 'COMMAND' : 'CONTROL'], '/']);
+    await this.monacoEditor.simulateKeyCommand('consoleMonacoEditor', 'openDocs');
   }
 
   public async pressEscape() {
-    await this.monacoEditor.simulateEscapeKey('consoleMonacoEditor');
     await this.monacoEditor.simulateKeyCommand('consoleMonacoEditor', 'Escape');
   }
 

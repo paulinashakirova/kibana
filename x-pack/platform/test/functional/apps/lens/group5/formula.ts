@@ -195,7 +195,7 @@ export default function ({ getService, getPageObjects }: FtrProviderContext) {
       await lens.configureDimension({
         dimension: 'lnsDatatable_metrics > lns-empty-dimension',
         operation: 'formula',
-        formula: `moving_average(sum(bytes), window=5`,
+        formula: `moving_average(sum(bytes), window=5)`,
         keepOpen: true,
       });
       await lens.setTableDynamicColoring('text');

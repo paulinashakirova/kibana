@@ -523,6 +523,22 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
       });
       editor.onDidBlurEditorText(onBlurMonaco);
 
+      // Expose the Escape key a11y logic as a triggerable action so that tests
+      // can invoke it via editor.trigger() without relying on real keyboard events,
+      // which are not reliably routed through Monaco's handler in EditContext mode.
+      editor.addAction({
+        id: 'kbn.a11y.handleEscape',
+        label: 'Handle Escape: close suggestions or show accessibility hint',
+        run: () => {
+          if (isSuggestionMenuOpen.current) {
+            editor.trigger('keyboard', 'hideSuggestWidget', {});
+          } else {
+            stopEditing();
+            editorHint.current?.focus();
+          }
+        },
+      });
+
       let messageContribution:
         | (monaco.editor.IEditorContribution & {
             showMessage?: (message: string, position: monaco.Position | null) => void;
@@ -589,6 +605,7 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
       editorDidMount,
       onBlurMonaco,
       onKeydownMonaco,
+      stopEditing,
       readOnlyMessage,
       enableCustomContextMenu,
       registerContextMenuActions,
