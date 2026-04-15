@@ -372,6 +372,41 @@ export class MonacoEditorService extends FtrService {
     }, testSubjId);
   }
 
+  /**
+   * Dispatch a keydown event for the Escape key directly on Monaco's DOM element via
+   * browser.execute. This reaches Monaco's onKeyDown handler (which is what triggers
+   * Kibana's a11y overlay via stopEditing()) without relying on Selenium's pressKeys,
+   * which is unreliable in Monaco 0.54 + EditContext environments.
+   *
+   * For closing the suggest widget, pair this with simulateKeyCommand('Escape') as a
+   * fallback: the DOM dispatch handles it in non-EditContext mode; the command handles
+   * it when EditContext is active and the DOM event doesn't reach Monaco's handler.
+   */
+  public async simulateEscapeKey(testSubjId: string) {
+    await this.browser.execute((id: string) => {
+      const container = document.querySelector(`[data-test-subj="${id}"]`);
+      const editor = window.MonacoEnvironment?.monaco?.editor
+        ?.getEditors()
+        ?.find((e: any) => container?.contains(e.getDomNode()));
+      if (!editor) return;
+      // Monaco listens for special keys (non-text) on the textarea element even in
+      // EditContext mode. Dispatch directly via JS rather than Selenium so the event
+      // reaches Monaco's keydown handler regardless of element focus/interactability.
+      const target =
+        editor.getDomNode()?.querySelector<HTMLElement>('textarea') ?? editor.getDomNode();
+      target?.dispatchEvent(
+        new KeyboardEvent('keydown', {
+          key: 'Escape',
+          code: 'Escape',
+          keyCode: 27,
+          which: 27,
+          bubbles: true,
+          cancelable: true,
+        })
+      );
+    }, testSubjId);
+  }
+
   public async getCodeEditorSuggestWidget(): Promise<WebElementWrapper> {
     return this.findService.byCssSelector(
       '[data-test-subj="kbnCodeEditorEditorOverflowWidgetsContainer"] .suggest-widget'

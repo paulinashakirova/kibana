@@ -84,7 +84,12 @@ export class ConsolePageObject extends FtrService {
   public async enterText(text: string) {
     if (!text) return;
     await this.monacoEditor.appendToCodeEditor('consoleMonacoEditor', text);
-    await this.monacoEditor.triggerSuggest('consoleMonacoEditor');
+    if (!text.includes('\n')) {
+      // Single-line text: the user is typing within a line and may expect autocomplete
+      // to evaluate. Multi-line text is always setup/context — no completion needed, and
+      // triggering it would start async network requests that can race with clickPlay().
+      await this.monacoEditor.triggerSuggest('consoleMonacoEditor');
+    }
   }
 
   /**
@@ -211,6 +216,7 @@ export class ConsolePageObject extends FtrService {
   }
 
   public async pressEscape() {
+    await this.monacoEditor.simulateEscapeKey('consoleMonacoEditor');
     await this.monacoEditor.simulateKeyCommand('consoleMonacoEditor', 'Escape');
   }
 
