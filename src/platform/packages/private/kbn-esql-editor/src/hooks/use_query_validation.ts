@@ -9,7 +9,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { ESQLCallbacks } from '@kbn/esql-types';
-import { ESQLLang, monaco } from '@kbn/monaco';
+import { ESQLLang, monaco } from '@kbn/code-editor';
 import type { MonacoMessage } from '@kbn/monaco/src/languages/esql/language';
 import type { MapCache } from 'lodash';
 import {

@@ -9,8 +9,8 @@
 
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import type { ESQLCallbacks, ESQLTelemetryCallbacks } from '@kbn/esql-types';
-import type { monaco } from '@kbn/monaco';
-import { ESQLLang, ESQL_LANG_ID } from '@kbn/monaco';
+import type { monaco } from '@kbn/code-editor';
+import { ESQLLang, ESQL_LANG_ID } from '@kbn/code-editor';
 import type { MonacoMessage } from '@kbn/monaco/src/languages/esql/language';
 import type { CodeEditorProps } from '@kbn/code-editor';
 import type { EsqlLanguageDeps } from '../types';
