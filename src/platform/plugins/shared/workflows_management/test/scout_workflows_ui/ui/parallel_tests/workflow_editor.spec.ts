@@ -118,16 +118,16 @@ test.describe(
 
       // Verify step types are shown in suggestions (alphabetically sorted, starting with 'a')
       await expect(
-        suggestWidget.getByRole('listitem', { name: 'elasticsearch.search' })
+        pageObjects.workflowEditor.getYamlEditorSuggestionItem('elasticsearch.search')
       ).toBeVisible();
       await expect(
-        suggestWidget.getByRole('listitem', { name: 'elasticsearch.index' })
+        pageObjects.workflowEditor.getYamlEditorSuggestionItem('elasticsearch.index')
       ).toBeVisible();
       await expect(
-        suggestWidget.getByRole('listitem', { name: 'elasticsearch.bulk' })
+        pageObjects.workflowEditor.getYamlEditorSuggestionItem('elasticsearch.bulk')
       ).toBeVisible();
 
-      await suggestWidget.getByRole('listitem', { name: 'elasticsearch.search' }).click();
+      await pageObjects.workflowEditor.getYamlEditorSuggestionItem('elasticsearch.search').click();
       await page.keyboard.press('Enter');
       await pageObjects.workflowEditor.typeInYamlEditor('with:');
       await page.keyboard.press('Enter');
@@ -137,7 +137,7 @@ test.describe(
       await expect(suggestWidget).toBeVisible();
       await pageObjects.workflowEditor.typeInYamlEditor('ind');
 
-      await expect(suggestWidget.getByRole('listitem', { name: 'index' })).toBeVisible();
+      await expect(pageObjects.workflowEditor.getYamlEditorSuggestionItem('index')).toBeVisible();
     });
 
     test('should show root-level property suggestions on empty lines', async ({ pageObjects }) => {
@@ -153,9 +153,9 @@ test.describe(
 
       await expect(suggestWidget).toBeVisible();
 
-      await expect(suggestWidget.getByRole('listitem', { name: 'consts' })).toBeVisible();
-      await expect(suggestWidget.getByRole('listitem', { name: 'inputs' })).toBeVisible();
-      await expect(suggestWidget.getByRole('listitem', { name: 'outputs' })).toBeVisible();
+      await expect(pageObjects.workflowEditor.getYamlEditorSuggestionItem('consts')).toBeVisible();
+      await expect(pageObjects.workflowEditor.getYamlEditorSuggestionItem('inputs')).toBeVisible();
+      await expect(pageObjects.workflowEditor.getYamlEditorSuggestionItem('outputs')).toBeVisible();
     });
 
     test('should not show validation errors for YAML comment lines with liquid variables', async ({

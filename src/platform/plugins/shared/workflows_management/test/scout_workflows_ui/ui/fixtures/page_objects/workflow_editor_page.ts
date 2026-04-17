@@ -263,6 +263,17 @@ export class WorkflowEditorPage {
     );
   }
 
+  /**
+   * Returns a locator for a suggestion item by its label text.
+   * Monaco 0.54 sets role="option" on non-Windows and role="listitem" on Windows,
+   * so we match both to stay cross-platform.
+   */
+  public getYamlEditorSuggestionItem(name: string) {
+    return this.getYamlEditorSuggestWidget()
+      .locator('[role="option"], [role="listitem"]')
+      .filter({ hasText: name });
+  }
+
   async typeInYamlEditor(text: string): Promise<void> {
     await this.page.evaluate((textToType: string) => {
       const container = document.querySelector('[data-test-subj="workflowYamlEditor"]');

@@ -21,6 +21,7 @@ export function ActionsOpsgenieServiceProvider(
 ) {
   const testSubjects = getService('testSubjects');
   const browser = getService('browser');
+  const retry = getService('retry');
 
   return {
     async createNewConnector(fields: ConnectorFormFields) {
@@ -47,9 +48,18 @@ export function ActionsOpsgenieServiceProvider(
     },
 
     async getObjFromJsonEditor() {
-      const value = await browser.execute(() => {
-        const editor = window.MonacoEnvironment?.monaco.editor.getEditors()[0];
-        return editor?.getModel()?.getValue() ?? '';
+      // The JSON editor is lazy-loaded inside a Suspense boundary. Wait for Monaco
+      // to mount inside the container before reading the value.
+      let value = '';
+      await retry.waitFor('json editor to be ready', async () => {
+        value = await browser.execute(() => {
+          const container = document.querySelector('[data-test-subj="actionJsonEditor"]');
+          const editor = window.MonacoEnvironment?.monaco.editor
+            .getEditors()
+            .find((e: any) => container?.contains(e.getDomNode()));
+          return editor?.getModel()?.getValue() ?? '';
+        });
+        return value.length > 0;
       });
       return JSON.parse(value);
     },
@@ -58,7 +68,10 @@ export function ActionsOpsgenieServiceProvider(
       const stringified = JSON.stringify(value);
 
       await browser.execute((text: string) => {
-        const editor = window.MonacoEnvironment?.monaco.editor.getEditors()[0];
+        const container = document.querySelector('[data-test-subj="actionJsonEditor"]');
+        const editor = window.MonacoEnvironment?.monaco.editor
+          .getEditors()
+          .find((e: any) => container?.contains(e.getDomNode()));
         if (editor) {
           editor.getModel()?.setValue(text);
           editor.focus();
