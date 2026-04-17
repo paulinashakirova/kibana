@@ -1945,8 +1945,10 @@ export function LensPageProvider({ getService, getPageObjects }: FtrProviderCont
     },
 
     async typeFormula(formula: string) {
-      // Use Monaco API instead of Selenium keyboard (Monaco 0.54.0 uses EditContext API)
-      await monacoEditor.typeCodeEditorValue(formula, 'lnsFormulaEditor', false);
+      await monacoEditor.setCodeEditorValueByCssSelector(
+        '[data-test-subj="lnsFormulaEditor"]',
+        formula
+      );
       // Debounce time for formula
       await common.sleep(300);
     },

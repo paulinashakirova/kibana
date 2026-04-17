@@ -203,7 +203,13 @@ export class ConsolePageObject extends FtrService {
   }
 
   public async pressEscape() {
-    await this.monacoEditor.simulateKeyCommand('consoleMonacoEditor', 'Escape');
+    await this.browser.execute((id: string) => {
+      const container = document.querySelector(`[data-test-subj="${id}"]`);
+      const editor = window.MonacoEnvironment?.monaco?.editor
+        ?.getEditors()
+        ?.find((e: any) => container?.contains(e.getDomNode()));
+      if (editor) editor.trigger('keyboard', 'kbn.a11y.handleEscape', {});
+    }, 'consoleMonacoEditor');
   }
 
   public async selectAllRequests() {
