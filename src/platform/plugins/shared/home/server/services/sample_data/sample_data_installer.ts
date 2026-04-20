@@ -119,18 +119,18 @@ export class SampleDataInstaller {
     try {
       // if the sample data was reindexed using UA, the index name is actually an alias pointing to the reindexed
       // index. In that case, we need to get rid of the alias and to delete the underlying index
-      const response = await this.esClient.asInternalUser.indices.getAlias({
+      const response = await this.esClient.asCurrentUser.indices.getAlias({
         name: index,
       });
       const aliasName = index;
       index = Object.keys(response)[0];
-      await this.esClient.asInternalUser.indices.deleteAlias({ name: aliasName, index });
+      await this.esClient.asCurrentUser.indices.deleteAlias({ name: aliasName, index });
     } catch (err) {
       // ignore errors from missing alias
     }
 
     try {
-      await this.esClient.asInternalUser.indices.delete({
+      await this.esClient.asCurrentUser.indices.delete({
         index,
       });
     } catch (err) {
@@ -138,7 +138,7 @@ export class SampleDataInstaller {
     }
 
     try {
-      await this.esClient.asInternalUser.indices.deleteDataStream({
+      await this.esClient.asCurrentUser.indices.deleteDataStream({
         name: index,
       });
     } catch (err) {
@@ -146,7 +146,7 @@ export class SampleDataInstaller {
     }
 
     try {
-      await this.esClient.asInternalUser.indices.deleteIndexTemplate({
+      await this.esClient.asCurrentUser.indices.deleteIndexTemplate({
         name: index,
       });
     } catch (err) {
@@ -167,13 +167,13 @@ export class SampleDataInstaller {
           index_patterns: [index],
           data_stream: {},
         };
-        await this.esClient.asInternalUser.indices.putIndexTemplate(request);
+        await this.esClient.asCurrentUser.indices.putIndexTemplate(request);
 
-        await this.esClient.asInternalUser.indices.createDataStream({
+        await this.esClient.asCurrentUser.indices.createDataStream({
           name: index,
         });
       } else {
-        await this.esClient.asInternalUser.indices.create({
+        await this.esClient.asCurrentUser.indices.create({
           index,
           settings: {
             index: {

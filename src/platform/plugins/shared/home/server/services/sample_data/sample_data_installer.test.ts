@@ -128,7 +128,7 @@ describe('SampleDataInstaller', () => {
 
     soClient.delete.mockResolvedValue({});
 
-    esClient.asInternalUser.indices.getAlias.mockImplementation(() => {
+    esClient.asCurrentUser.indices.getAlias.mockImplementation(() => {
       throw new Error('alias not found');
     });
 
@@ -144,10 +144,10 @@ describe('SampleDataInstaller', () => {
     it('cleanups the data index before installing', async () => {
       await installer.install('test_single_data_index');
 
-      expect(esClient.asInternalUser.indices.deleteIndexTemplate).toHaveBeenCalledTimes(1);
-      expect(esClient.asInternalUser.indices.deleteDataStream).toHaveBeenCalledTimes(1);
-      expect(esClient.asInternalUser.indices.delete).toHaveBeenCalledTimes(1);
-      expect(esClient.asInternalUser.indices.delete).toHaveBeenCalledWith({
+      expect(esClient.asCurrentUser.indices.deleteIndexTemplate).toHaveBeenCalledTimes(1);
+      expect(esClient.asCurrentUser.indices.deleteDataStream).toHaveBeenCalledTimes(1);
+      expect(esClient.asCurrentUser.indices.delete).toHaveBeenCalledTimes(1);
+      expect(esClient.asCurrentUser.indices.delete).toHaveBeenCalledWith({
         index: 'kibana_sample_data_test_single_data_index',
       });
     });
@@ -155,9 +155,9 @@ describe('SampleDataInstaller', () => {
     it('creates the data index', async () => {
       await installer.install('test_single_data_index');
 
-      expect(esClient.asInternalUser.indices.putIndexTemplate).toHaveBeenCalledTimes(0);
-      expect(esClient.asInternalUser.indices.create).toHaveBeenCalledTimes(1);
-      expect(esClient.asInternalUser.indices.create).toHaveBeenCalledWith({
+      expect(esClient.asCurrentUser.indices.putIndexTemplate).toHaveBeenCalledTimes(0);
+      expect(esClient.asCurrentUser.indices.create).toHaveBeenCalledTimes(1);
+      expect(esClient.asCurrentUser.indices.create).toHaveBeenCalledWith({
         index: 'kibana_sample_data_test_single_data_index',
         mappings: {
           properties: {
@@ -172,9 +172,9 @@ describe('SampleDataInstaller', () => {
 
     it('creates index template and datastream in datastream mode', async () => {
       await installer.install('test_tsdb_data_index');
-      expect(esClient.asInternalUser.indices.putIndexTemplate).toHaveBeenCalledTimes(1);
-      expect(esClient.asInternalUser.indices.createDataStream).toHaveBeenCalledTimes(1);
-      expect(esClient.asInternalUser.indices.create).toHaveBeenCalledTimes(0);
+      expect(esClient.asCurrentUser.indices.putIndexTemplate).toHaveBeenCalledTimes(1);
+      expect(esClient.asCurrentUser.indices.createDataStream).toHaveBeenCalledTimes(1);
+      expect(esClient.asCurrentUser.indices.create).toHaveBeenCalledTimes(0);
     });
 
     it('inserts the data into the index', async () => {
@@ -212,7 +212,7 @@ describe('SampleDataInstaller', () => {
     });
 
     it('does not throw when the index removal fails', async () => {
-      esClient.asInternalUser.indices.delete.mockImplementation(() => {
+      esClient.asCurrentUser.indices.delete.mockImplementation(() => {
         throw new Error('cannot delete index');
       });
 
@@ -220,7 +220,7 @@ describe('SampleDataInstaller', () => {
     });
 
     it('throws a SampleDataInstallError when the index creation fails', async () => {
-      esClient.asInternalUser.indices.create.mockImplementation(() => {
+      esClient.asCurrentUser.indices.create.mockImplementation(() => {
         // eslint-disable-next-line no-throw-literal
         throw {
           message: 'Cannot create index',
@@ -259,7 +259,7 @@ describe('SampleDataInstaller', () => {
       it('deletes the alias and the index', async () => {
         const indexName = 'target_index';
 
-        esClient.asInternalUser.indices.getAlias.mockResponse({
+        esClient.asCurrentUser.indices.getAlias.mockResponse({
           [indexName]: {
             aliases: {
               kibana_sample_data_test_single_data_index: {},
@@ -269,14 +269,14 @@ describe('SampleDataInstaller', () => {
 
         await installer.install('test_single_data_index');
 
-        expect(esClient.asInternalUser.indices.deleteAlias).toHaveBeenCalledTimes(1);
-        expect(esClient.asInternalUser.indices.deleteAlias).toHaveBeenCalledWith({
+        expect(esClient.asCurrentUser.indices.deleteAlias).toHaveBeenCalledTimes(1);
+        expect(esClient.asCurrentUser.indices.deleteAlias).toHaveBeenCalledWith({
           name: 'kibana_sample_data_test_single_data_index',
           index: indexName,
         });
 
-        expect(esClient.asInternalUser.indices.delete).toHaveBeenCalledTimes(1);
-        expect(esClient.asInternalUser.indices.delete).toHaveBeenCalledWith({
+        expect(esClient.asCurrentUser.indices.delete).toHaveBeenCalledTimes(1);
+        expect(esClient.asCurrentUser.indices.delete).toHaveBeenCalledWith({
           index: indexName,
         });
       });
@@ -287,8 +287,8 @@ describe('SampleDataInstaller', () => {
     it('deletes the data index', async () => {
       await installer.uninstall('test_single_data_index');
 
-      expect(esClient.asInternalUser.indices.delete).toHaveBeenCalledTimes(1);
-      expect(esClient.asInternalUser.indices.delete).toHaveBeenCalledWith({
+      expect(esClient.asCurrentUser.indices.delete).toHaveBeenCalledTimes(1);
+      expect(esClient.asCurrentUser.indices.delete).toHaveBeenCalledWith({
         index: 'kibana_sample_data_test_single_data_index',
       });
     });
@@ -317,7 +317,7 @@ describe('SampleDataInstaller', () => {
     });
 
     it('does not throw when the index removal fails', async () => {
-      esClient.asInternalUser.indices.delete.mockImplementation(() => {
+      esClient.asCurrentUser.indices.delete.mockImplementation(() => {
         throw new Error('cannot delete index');
       });
 
@@ -350,7 +350,7 @@ describe('SampleDataInstaller', () => {
       it('deletes the alias and the index', async () => {
         const indexName = 'target_index';
 
-        esClient.asInternalUser.indices.getAlias.mockResponse({
+        esClient.asCurrentUser.indices.getAlias.mockResponse({
           [indexName]: {
             aliases: {
               kibana_sample_data_test_single_data_index: {},
@@ -360,14 +360,14 @@ describe('SampleDataInstaller', () => {
 
         await installer.uninstall('test_single_data_index');
 
-        expect(esClient.asInternalUser.indices.deleteAlias).toHaveBeenCalledTimes(1);
-        expect(esClient.asInternalUser.indices.deleteAlias).toHaveBeenCalledWith({
+        expect(esClient.asCurrentUser.indices.deleteAlias).toHaveBeenCalledTimes(1);
+        expect(esClient.asCurrentUser.indices.deleteAlias).toHaveBeenCalledWith({
           name: 'kibana_sample_data_test_single_data_index',
           index: indexName,
         });
 
-        expect(esClient.asInternalUser.indices.delete).toHaveBeenCalledTimes(1);
-        expect(esClient.asInternalUser.indices.delete).toHaveBeenCalledWith({
+        expect(esClient.asCurrentUser.indices.delete).toHaveBeenCalledTimes(1);
+        expect(esClient.asCurrentUser.indices.delete).toHaveBeenCalledWith({
           index: indexName,
         });
       });

@@ -122,14 +122,14 @@ async function getSampleDatasetStatus(
     const dataIndexConfig = sampleDataset.dataIndices[i];
     const index = createIndexName(sampleDataset.id, dataIndexConfig.id);
     try {
-      const indexExists = await elasticsearch.client.asInternalUser.indices.exists({
+      const indexExists = await elasticsearch.client.asCurrentUser.indices.exists({
         index,
       });
       if (!indexExists) {
         return { status: NOT_INSTALLED };
       }
 
-      const count = await elasticsearch.client.asInternalUser.count({
+      const count = await elasticsearch.client.asCurrentUser.count({
         index,
       });
       if (count.count === 0) {
