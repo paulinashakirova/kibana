@@ -38,9 +38,6 @@ export class KibanaCodeEditorWrapper {
    * `waitCodeEditorReady`.
    */
   async waitCodeEditorReady(dataTestSubjId: string): Promise<void> {
-    const editorContainer = this.page.getByTestId(dataTestSubjId);
-    await expect(editorContainer).toBeVisible();
-
     await expect
       .poll(
         async () =>
