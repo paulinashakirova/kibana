@@ -67,16 +67,20 @@ export function ActionsOpsgenieServiceProvider(
     async setJsonEditor(value: object) {
       const stringified = JSON.stringify(value);
 
-      await browser.execute((text: string) => {
-        const container = document.querySelector('[data-test-subj="actionJsonEditor"]');
-        const editor = window.MonacoEnvironment?.monaco.editor
-          .getEditors()
-          .find((e: any) => container?.contains(e.getDomNode()));
-        if (editor) {
+      await retry.waitFor('json editor to be ready for writing', async () => {
+        return browser.execute((text: string) => {
+          const container = document.querySelector('[data-test-subj="actionJsonEditor"]');
+          const editor = window.MonacoEnvironment?.monaco.editor
+            .getEditors()
+            .find((e: any) => container?.contains(e.getDomNode()));
+          if (!editor) {
+            return false;
+          }
           editor.getModel()?.setValue(text);
           editor.focus();
-        }
-      }, stringified);
+          return true;
+        }, stringified);
+      });
     },
   };
 }
