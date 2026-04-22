@@ -172,7 +172,7 @@ export class KibanaCodeEditorWrapper {
 
         const monacoUri = (
           window as Window & { MonacoEnvironment?: any }
-        ).MonacoEnvironment?.monaco?.Uri.parse(uri);
+        ).MonacoEnvironment?.monaco?.Uri?.parse(uri);
         if (!monacoUri) {
           throw new Error('Monaco Uri is not available');
         }

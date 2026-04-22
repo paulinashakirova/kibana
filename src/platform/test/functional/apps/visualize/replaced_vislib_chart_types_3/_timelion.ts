@@ -303,9 +303,7 @@ export default function ({ getPageObjects, getService }: FtrProviderContext) {
             });
           });
 
-          // Skipped: Timelion parser doesn't return field suggestions for metric=avg: context
-          // This is a pre-existing issue unrelated to Monaco upgrade
-          it.skip('should show field suggestions for metric argument when index pattern set', async () => {
+          it('should show field suggestions for metric argument when index pattern set', async () => {
             await monacoEditor.setCodeEditorValue('');
             await monacoEditor.typeCodeEditorValue(
               '.es(index=logstash-*, timefield=@timestamp, metric=avg:',

@@ -122,7 +122,6 @@ export default ({ getPageObjects, getService }: FtrProviderContext) => {
         await testSubjects.click('formWizardStep-2');
         await pageObjects.header.waitUntilLoadingHasFinished();
 
-        // Modify Index settings (use Monaco API - Selenium keyboard broke with Monaco 0.54)
         await monacoEditor.setCodeEditorValue(
           JSON.stringify({
             index: {

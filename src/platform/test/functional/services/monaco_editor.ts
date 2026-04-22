@@ -9,7 +9,8 @@
 
 import expect from '@kbn/expect';
 import type { WebElementWrapper } from '@kbn/ftr-common-functional-ui-services';
-import { KBN_A11Y_HANDLE_ESCAPE_ACTION_ID } from '@kbn/code-editor';
+// Defined inline to avoid importing @kbn/code-editor which pulls in monaco-editor CSS (Node.js incompatible)
+const KBN_A11Y_HANDLE_ESCAPE_ACTION_ID = 'kbn.a11y.handleEscape' as const;
 import { FtrService } from '../ftr_provider_context';
 
 export class MonacoEditorService extends FtrService {
@@ -46,21 +47,6 @@ export class MonacoEditorService extends FtrService {
     });
 
     return values[nthIndex] as string;
-  }
-
-  /**
-   * Focus the editor using Monaco's API.
-   */
-  public async focusCodeEditor(testSubjId: string) {
-    await this.browser.execute((id: string) => {
-      const container = document.querySelector(`[data-test-subj="${id}"]`);
-      const editor = window.MonacoEnvironment?.monaco?.editor
-        ?.getEditors()
-        ?.find((e: any) => container?.contains(e.getDomNode()));
-      if (editor) {
-        editor.focus();
-      }
-    }, testSubjId);
   }
 
   /**
@@ -194,9 +180,7 @@ export class MonacoEditorService extends FtrService {
     }, testSubjId);
   }
 
-  // --- Methods that accept CSS selectors (for editors without data-test-subj) ---
-
-  public async waitCodeEditorReadyByCssSelector(cssSelector: string): Promise<void> {
+  private async waitCodeEditorReadyByCssSelector(cssSelector: string): Promise<void> {
     await this.retry.waitFor('editor ready', async () => {
       const isReady = await this.browser.execute((selector: string) => {
         const container = document.querySelector(selector);
@@ -207,57 +191,6 @@ export class MonacoEditorService extends FtrService {
       }, cssSelector);
       return isReady;
     });
-  }
-
-  public async focusCodeEditorByCssSelector(cssSelector: string) {
-    await this.browser.execute((selector: string) => {
-      const container = document.querySelector(selector);
-      const editor = window.MonacoEnvironment?.monaco?.editor
-        ?.getEditors()
-        ?.find((e: any) => container?.contains(e.getDomNode()));
-      if (editor) {
-        editor.focus();
-      }
-    }, cssSelector);
-  }
-
-  public async typeCodeEditorValueByCssSelector(
-    cssSelector: string,
-    value: string,
-    triggerSuggest = true
-  ) {
-    await this.waitCodeEditorReadyByCssSelector(cssSelector);
-    await this.browser.execute(
-      (selector: string, text: string, suggest: boolean) => {
-        const container = document.querySelector(selector);
-        const editor = window
-          .MonacoEnvironment!.monaco.editor.getEditors()
-          .find((e: any) => container?.contains(e.getDomNode()));
-
-        if (!editor) return;
-
-        editor.focus();
-        const pos = editor.getPosition() || { lineNumber: 1, column: 1 };
-        editor.executeEdits('test', [
-          {
-            range: {
-              startLineNumber: pos.lineNumber,
-              startColumn: pos.column,
-              endLineNumber: pos.lineNumber,
-              endColumn: pos.column,
-            },
-            text,
-          },
-        ]);
-        if (suggest) {
-          editor.trigger('keyboard', 'editor.action.triggerSuggest', {});
-        }
-      },
-      cssSelector,
-      value,
-      triggerSuggest
-    );
-    await this.focusCodeEditorByCssSelector(cssSelector);
   }
 
   public async setCodeEditorValueByCssSelector(cssSelector: string, value: string) {
@@ -280,16 +213,6 @@ export class MonacoEditorService extends FtrService {
 
   public async clearCodeEditorValueByCssSelector(cssSelector: string) {
     await this.setCodeEditorValueByCssSelector(cssSelector, '');
-  }
-
-  public async getCodeEditorValueByCssSelector(cssSelector: string): Promise<string> {
-    return await this.browser.execute((selector: string) => {
-      const container = document.querySelector(selector);
-      const editor = window
-        .MonacoEnvironment!.monaco.editor.getEditors()
-        .find((e: any) => container?.contains(e.getDomNode()));
-      return editor?.getModel()?.getValue() ?? '';
-    }, cssSelector);
   }
 
   public async setScrollTop(scrollTop: number, nthIndex: number = 0) {
