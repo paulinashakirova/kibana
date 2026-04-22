@@ -73,6 +73,7 @@ dependsOn:
   - '@kbn/unified-data-table'
   - '@kbn/session-notifications-plugin'
   - '@kbn/ui-actions-plugin'
+  - '@kbn/code-editor'
 tags:
   - test-helper
   - package
