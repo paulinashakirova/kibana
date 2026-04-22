@@ -9,6 +9,7 @@
 
 import expect from '@kbn/expect';
 import type { WebElementWrapper } from '@kbn/ftr-common-functional-ui-services';
+import { KBN_A11Y_HANDLE_ESCAPE_ACTION_ID } from '@kbn/code-editor';
 import { FtrService } from '../ftr_provider_context';
 
 export class MonacoEditorService extends FtrService {
@@ -63,8 +64,9 @@ export class MonacoEditorService extends FtrService {
   }
 
   /**
-   * Set editor value by test subject ID.
-   * @param triggerSuggest - Whether to trigger autocomplete suggestions (default: true)
+   * Replaces the entire editor content and moves the cursor to the end.
+   * @param triggerSuggest - Whether to trigger autocomplete after setting the value (default: true).
+   *   Pass false for setup/context text where you don't want completions to fire.
    */
   public async typeCodeEditorValue(value: string, testSubjId: string, triggerSuggest = true) {
     await this.waitCodeEditorReady(testSubjId);
@@ -310,6 +312,11 @@ export class MonacoEditorService extends FtrService {
     }, nthIndex);
   }
 
+  /**
+   * Types text character-by-character via Monaco's 'type' command, firing per-character model
+   * change events. Use this when a test depends on incremental change listeners (e.g. live
+   * validation as you type). For bulk content, prefer `appendToCodeEditor` which is faster.
+   */
   public async simulateTyping(testSubjId: string, text: string) {
     await this.waitCodeEditorReady(testSubjId);
     await this.browser.execute(
@@ -329,18 +336,13 @@ export class MonacoEditorService extends FtrService {
     );
   }
 
-  public async simulateKeyPress(testSubjId: string, key: string) {
-    const textarea = await this.waitCodeEditorReady(testSubjId);
-    await textarea.pressKeys(key);
-  }
-
   public async simulateKeyCommand(testSubjId: string, key: string) {
     const keyToCommandId: Record<string, string> = {
       ArrowLeft: 'cursorLeft',
       ArrowRight: 'cursorRight',
       ArrowUp: 'cursorUp',
       ArrowDown: 'cursorDown',
-      Escape: 'kbn.a11y.handleEscape',
+      Escape: KBN_A11Y_HANDLE_ESCAPE_ACTION_ID,
       Enter: 'acceptSelectedSuggestion',
     };
     await this.browser.execute(

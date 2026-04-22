@@ -18,6 +18,10 @@ import '@testing-library/jest-dom';
 // so any listener-based filtering is bypassed. The correct fix is to patch Delayer.prototype.cancel
 // to leave the promise pending (do not reject) instead of rejecting with CancellationError.
 // This eliminates the unhandled rejection at the source without affecting Monaco's public API.
+//
+// This is a workaround for an upstream Monaco bug. No tracking issue exists in the Monaco repo
+// as of the time of this upgrade; check https://github.com/microsoft/monaco-editor/issues when
+// upgrading Monaco again to see if a fix has landed.
 beforeAll(() => {
   const monacoAsync = jest.requireActual('monaco-editor/esm/vs/base/common/async') as {
     Delayer?: { prototype?: any };
@@ -37,14 +41,15 @@ beforeAll(() => {
   }
 });
 
-// Mock navigator.clipboard for Monaco Editor 0.45.0+
-// Monaco's Safari workaround cancels internal DeferredPromises, causing unhandled rejections in tests
+// Monaco 0.54.0 Safari clipboard workaround cancels internal DeferredPromises, which surface as
+// unhandled rejections in Jest. Mock the clipboard API and swallow expected Canceled errors.
 Object.defineProperty(navigator, 'clipboard', {
   value: {
     writeText: jest.fn().mockResolvedValue(undefined),
     readText: jest.fn().mockResolvedValue(''),
     write: jest.fn((items?: ClipboardItem[]) => {
-      // Handle cancelled promises to prevent unhandled rejections
+      // ClipboardItem data values may be cancelled DeferredPromises — attach .catch() so their
+      // rejection doesn't propagate, but rethrow anything that isn't an expected cancellation.
       items?.forEach((item: any) => {
         if (item?.data) {
           Object.values(item.data).forEach((value: any) => {

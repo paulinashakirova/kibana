@@ -41,6 +41,9 @@ import {
 } from './mods';
 import { styles } from './editor.styles';
 
+/** Monaco action ID for Escape; use `editor.trigger()` — synthetic key events are unreliable in EditContext mode (Monaco 0.54+). */
+export const KBN_A11Y_HANDLE_ESCAPE_ACTION_ID = 'kbn.a11y.handleEscape' as const;
+
 export interface CodeEditorProps
   extends Pick<ReactMonacoEditorProps, 'overflowWidgetsContainerZIndexOverride'> {
   /** Width of editor. Defaults to 100%. */
@@ -527,7 +530,7 @@ export const CodeEditor: React.FC<CodeEditorProps> = ({
       // can invoke it via editor.trigger() without relying on real keyboard events,
       // which are not reliably routed through Monaco's handler in EditContext mode.
       editor.addAction({
-        id: 'kbn.a11y.handleEscape',
+        id: KBN_A11Y_HANDLE_ESCAPE_ACTION_ID,
         label: 'Handle Escape: close suggestions or show accessibility hint',
         run: () => {
           if (isSuggestionMenuOpen.current) {

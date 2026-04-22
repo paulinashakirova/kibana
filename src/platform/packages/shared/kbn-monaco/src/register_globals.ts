@@ -50,6 +50,11 @@ window.MonacoEnvironment = {
 // uses the old signature. This shim intercepts old-style calls, manually creates the Worker, sends
 // the two initialization messages monaco-worker-manager requires before Monaco's own INITIALIZE
 // handshake, then forwards to the real createWebWorker with the new API.
+//
+// TODO: remove this shim once monaco-yaml (currently 5.4.0) / monaco-worker-manager (currently
+// 2.0.1, unmaintained as of 2022) is updated to pass a `worker` factory directly and no longer
+// calls createWebWorker with the old `{ moduleId }` shape. No upstream tracking issue exists yet;
+// check both repos when upgrading monaco-yaml.
 {
   // Monaco's editor.api.d.ts merges two `editor` namespaces so `createWebWorker` is typed only as
   // the legacy `{ moduleId }` overload; the runtime accepts `IInternalWebWorkerOptions` as well.

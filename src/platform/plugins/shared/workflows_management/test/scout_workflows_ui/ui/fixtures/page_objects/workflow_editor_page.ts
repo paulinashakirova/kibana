@@ -274,6 +274,11 @@ export class WorkflowEditorPage {
       .filter({ hasText: name });
   }
 
+  /**
+   * Types text into the YAML editor at the current cursor position, character by character.
+   * Unlike `setYamlEditorValue`, this simulates typing so language-aware editor features
+   * such as autocomplete suggestions are triggered.
+   */
   async typeInYamlEditor(text: string): Promise<void> {
     await this.page.evaluate((textToType: string) => {
       const container = document.querySelector('[data-test-subj="workflowYamlEditor"]');

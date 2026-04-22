@@ -21,6 +21,8 @@ export class KibanaCodeEditorWrapper {
   constructor(private readonly page: ScoutPage) {}
 
   private async getEditorModelUriByTestSubj(testSubjId: string): Promise<string> {
+    // `data-uri` is an internal Monaco DOM attribute — not part of the public API.
+    // No public alternative exists in Monaco 0.54; re-check on future Monaco upgrades.
     const modelUri = await this.page.evaluate((id) => {
       const container = document.querySelector(`[data-test-subj="${id}"]`);
       return container?.querySelector('.monaco-editor[data-uri]')?.getAttribute('data-uri') ?? null;
@@ -34,8 +36,8 @@ export class KibanaCodeEditorWrapper {
   }
 
   /**
-   * Waits for the Monaco textarea inside the container (visible + enabled), like FTR
-   * `waitCodeEditorReady`.
+   * Waits until the editor inside the given container is ready to accept interactions.
+   * Safe to call before reading or writing editor content.
    */
   async waitCodeEditorReady(dataTestSubjId: string): Promise<void> {
     await expect
@@ -134,8 +136,8 @@ export class KibanaCodeEditorWrapper {
   }
 
   /**
-   * Sets the value of the Monaco editor contained within a given data-test-subj container.
-   * Mirrors the FTR approach: resolve the model for that editor and update it directly.
+   * Replaces the entire content of the editor inside the given container with `value`.
+   * Waits for the editor to be ready before writing.
    */
   async setCodeEditorValueByTestSubj(testSubjId: string, value: string): Promise<void> {
     await this.waitCodeEditorReady(testSubjId);

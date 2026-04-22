@@ -7,7 +7,6 @@
  * License v3.0 only", or the "Server Side Public License, v 1".
  */
 
-import { Key } from 'selenium-webdriver';
 import { asyncForEach } from '@kbn/std';
 import expect from '@kbn/expect';
 import { FtrService } from '../ftr_provider_context';
@@ -78,10 +77,14 @@ export class ConsolePageObject extends FtrService {
   public async enterText(text: string) {
     if (!text) return;
     await this.monacoEditor.appendToCodeEditor('consoleMonacoEditor', text);
-    if (!text.includes('\n')) {
-      // Single-line text: the user is typing within a line and may expect autocomplete
-      // to evaluate. Multi-line text is always setup/context — no completion needed, and
-      // triggering it would start async network requests that can race with clickPlay().
+    const trimmed = text.trimStart();
+    const isComment =
+      trimmed.startsWith('#') || trimmed.startsWith('//') || trimmed.startsWith('/*');
+    if (!text.includes('\n') && !isComment) {
+      // Single-line non-comment text: the user is typing within a line and may expect
+      // autocomplete to evaluate. Multi-line text and comments are always setup/context —
+      // no completion needed. For comments, triggerSuggest would bypass Monaco's
+      // language-aware suppression and incorrectly show the widget inside comment lines.
       await this.monacoEditor.triggerSuggest('consoleMonacoEditor');
     }
   }
@@ -203,13 +206,7 @@ export class ConsolePageObject extends FtrService {
   }
 
   public async pressEscape() {
-    await this.browser.execute((id: string) => {
-      const container = document.querySelector(`[data-test-subj="${id}"]`);
-      const editor = window.MonacoEnvironment?.monaco?.editor
-        ?.getEditors()
-        ?.find((e: any) => container?.contains(e.getDomNode()));
-      if (editor) editor.trigger('keyboard', 'kbn.a11y.handleEscape', {});
-    }, 'consoleMonacoEditor');
+    await this.monacoEditor.simulateKeyCommand('consoleMonacoEditor', 'Escape');
   }
 
   public async selectAllRequests() {
@@ -240,13 +237,9 @@ export class ConsolePageObject extends FtrService {
     return await editorViewDiv.getComputedStyle('font-size');
   }
 
-  public async pasteClipboardValue() {
-    const textArea = await this.getTextArea();
-    await textArea.pressKeys([Key[process.platform === 'darwin' ? 'COMMAND' : 'CONTROL'], 'v']);
-  }
-
   public async copyRequestsToClipboard() {
-    // Get content via Monaco API and write to clipboard
+    // Ctrl+A / Ctrl+C on the textarea no longer works reliably in Monaco 0.54 EditContext mode,
+    // so we read the value via the Monaco API and write it to the clipboard programmatically.
     const content = await this.monacoEditor.getCodeEditorValueByTestSubj('consoleMonacoEditor');
     const clipboardError = await this.browser.executeAsync(
       (text: string, done: (errorMessage: string | null) => void) => {
