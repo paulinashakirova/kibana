@@ -46,3 +46,4 @@ browserslist
 react-day-picker
 jszip
 monaco-marker-data-provider
+patch-package
