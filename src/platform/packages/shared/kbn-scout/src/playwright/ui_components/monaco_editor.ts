@@ -273,6 +273,29 @@ export class KibanaCodeEditorWrapper {
   }
 
   /**
+   * Types text character-by-character via Monaco's 'type' command, firing per-character model
+   * change events. Use this when a test depends on incremental change listeners (e.g. live
+   * autocomplete filtering as you type). For bulk content, prefer setCodeEditorValueByTestSubj.
+   */
+  async simulateTyping(testSubjId: string, text: string): Promise<void> {
+    await this.waitCodeEditorReady(testSubjId);
+    await this.page.evaluate(
+      ({ id, textToType }: { id: string; textToType: string }) => {
+        const container = document.querySelector(`[data-test-subj="${id}"]`);
+        const editor = (window as any).MonacoEnvironment?.monaco?.editor
+          ?.getEditors()
+          ?.find((e: any) => container?.contains(e.getDomNode()));
+        if (!editor) return;
+        editor.focus();
+        for (let i = 0; i < textToType.length; i++) {
+          editor.trigger('keyboard', 'type', { text: textToType[i] });
+        }
+      },
+      { id: testSubjId, textToType: text }
+    );
+  }
+
+  /**
    * Toggles the Monaco suggestion detail panel (the documentation pop-up displayed
    * alongside the autocomplete suggestion list) for the given editor instance.
    *
