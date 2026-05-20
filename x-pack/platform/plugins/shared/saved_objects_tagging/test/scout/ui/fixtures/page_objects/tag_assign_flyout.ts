@@ -26,9 +26,8 @@ export class TagAssignFlyout {
   }
 
   async waitForResultsLoaded() {
-    await this.resultList.waitFor({ state: 'visible' });
-    await this.page.waitForFunction(
-      () => document.querySelectorAll('[data-is-loading="true"]').length === 0
-    );
+    await this.resultList.locator('.euiLoadingSpinner').waitFor({ state: 'hidden' });
+    // EUI icons are briefly role="img" with no alt text while loading — wait for them to settle.
+    await this.resultList.locator('[data-is-loading="true"]').waitFor({ state: 'hidden' });
   }
 }
